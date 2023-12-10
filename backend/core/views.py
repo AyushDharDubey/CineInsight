@@ -8,13 +8,13 @@ from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from .serializers import MovieSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.generics import CreateAPIView, ListAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 
-class DashboardList(ListAPIView):
+class DashboardView(ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
-class FilterList(APIView):
+class FilterView(APIView):
     def get_filter_arguments(filter):
         elements = Movie.objects.values_list(filter, flat=True).distinct()
         filters = []
@@ -28,7 +28,7 @@ class FilterList(APIView):
             languages = self.get_filter_arguments('language')
             return Response({'genres': genres}, status=status.HTTP_200_OK)
 
-class MovieList(APIView):
+class SearchView(APIView):
     def get(self, request, *args, **kwargs):
         q = request.GET.get('q')
         genres = request.GET.getlist('genre')
@@ -49,3 +49,13 @@ class MovieList(APIView):
         serializer = MovieSerializer(page, many=True)
 
         return paginator.get_paginated_response(serializer.data)
+
+class MovieView(RetrieveAPIView):
+    serializer_class = MovieSerializer
+
+    def get_object(self):
+        movie_id = self.request.GET.get('id')
+        try:
+            return Movie.objects.get(pk=movie_id)
+        except Movie.DoesNotExist:
+            return None

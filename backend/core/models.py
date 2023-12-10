@@ -5,8 +5,6 @@ class Movie(models.Model):
     name = models.CharField(max_length=256)
     image = models.CharField(max_length=512)
     description = models.CharField(max_length=512)
-    review_title = models.CharField(max_length=256)
-    review_body = models.CharField(max_length=2048)
     rating = models.FloatField()
 #    platforms = models.CharField(max_length=256)
     release_date = models.CharField(max_length=12)
@@ -16,3 +14,9 @@ class Movie(models.Model):
     tags = models.CharField(max_length=256)
     language = models.CharField(max_length=64)
     genre = models.CharField(max_length=64)
+
+'''class Reviews(models.Model):
+    title = models.CharField(max_length=256)
+    time = models.DateTimeField(auto_now_add=True)
+    body = models.CharField(max_length=2048)
+    '''
