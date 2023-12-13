@@ -10,8 +10,18 @@ from django.core.mail import send_mail
 from .models import User
 from django.conf import settings
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated
 
-class SignupView(APIView):
+
+class HomeAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        if request.user:
+            content = {'message': 'Welcome to the JWT Authentification page using React Js and Django!'}
+            return Response(content, status=status.HTTP_200_OK)
+
+class SignupAPIView(APIView):
     def get(self, request):
         return Response({'message': request.user.is_authenticated})
     def post(self, request):
@@ -28,9 +38,9 @@ class SignupView(APIView):
                     'refresh': str(refresh_token),
                     'access': str(access_token)
                 }
-                return Response(content, status=status.HTTP_200_OK)
+                return Response(content, status=status.HTTP_201_CREATED)
             else:
-                return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             print(e)
             return Response({'message': 'something went wrong'}, status.HTTP_400_BAD_REQUEST)
@@ -46,7 +56,7 @@ class OtpValidateView(APIView):
             user.email_verification_token = None
             user.save()
             return Response({'message': 'OTP verified.'}, status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
 @receiver(post_save, sender=User)
 def send_otp(sender, instance, created, **kwargs):
