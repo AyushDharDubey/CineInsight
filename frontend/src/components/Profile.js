@@ -9,6 +9,7 @@ export default function Profile() {
         else {
             (async () => {
                 try {
+                    console.log()
                     await axios.get('http://localhost:8000/auth/');
                 } catch (e) {
                     console.log('not auth')
