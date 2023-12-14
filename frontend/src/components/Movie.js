@@ -3,21 +3,6 @@ import axios from "axios";
 import { useParams } from 'react-router-dom';
 
 export default function Movie() {
-    useEffect(() => {
-        if (localStorage.getItem('access_token') === null) {
-            window.location.href = '/login'
-        }
-        else {
-            (async () => {
-                try {
-                    await axios.get('http://localhost:8000/auth/');
-                } catch (e) {
-                    console.log('not auth')
-                }
-            })()
-        };
-    }, []);
-
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [isFav, setIsFav] = useState(false);
@@ -51,9 +36,15 @@ export default function Movie() {
         // getting filter arguments
         setTimeout(() => {
             (async () => {
-                const response = await axios.get('http://localhost:8000/api/favourites/');
-                if (response.data.fav.includes(movieId)) setIsFav(true);
-                else setIsFav(false)
+                try {
+                    const response = await axios.get('http://localhost:8000/api/favourites/');
+                    if (response) {
+                        if (response.data.fav.includes(movieId)) setIsFav(true);
+                        else setIsFav(false)
+                    }
+                } catch (e) {
+                    console.log(e)
+                }
             })();
         }, 3000);
     }, []);

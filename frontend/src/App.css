@@ -311,10 +311,7 @@ body {
   max-width: 800px;
 }
 
-.edit-profile {
-  position: absolute;
-  top: 1em;
-  right: 1em;
+button {
   font-family: inherit;
   font-size: 0.9em;
   font-weight: bold;
@@ -322,8 +319,16 @@ body {
   text-decoration: none;
   padding: 0.5em 1em;
   border-radius: 4px;
+  border-color: #2b2e30;
   background-color: #2b2e30;
   transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.edit-profile, button .profile {
+  position: absolute;
+  top: 1em;
+  right: 1em;
 }
 
 .edit-profile:hover {

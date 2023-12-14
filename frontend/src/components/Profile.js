@@ -7,14 +7,15 @@ export default function Profile() {
             window.location.href = '/login'
         }
         else {
-            (async () => {
-                try {
-                    console.log()
-                    await axios.get('http://localhost:8000/auth/');
-                } catch (e) {
-                    console.log('not auth')
-                }
-            })()
+            setTimeout(() => {
+                (async () => {
+                    try {
+                        await axios.get('http://localhost:8000/auth/');
+                    } catch (e) {
+                        console.log('not auth')
+                    }
+                })()
+            }, 3000);
         };
     }, []);
 

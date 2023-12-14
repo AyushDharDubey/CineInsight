@@ -2,21 +2,6 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import axios from "axios";
 
 function Home() {
-    useEffect(() => {
-        if (localStorage.getItem('access_token') === null) {
-            window.location.href = '/login'
-        }
-        else {
-            (async () => {
-                try {
-                    const { data } = await axios.get('http://localhost:8000/auth/');
-                } catch (e) {
-                    console.log('not auth')
-                }
-            })()
-        };
-    }, []);
-
     const [isLoading, setIsLoading] = useState(false);
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
@@ -24,6 +9,7 @@ function Home() {
     const years = Array.from({ length: 100 }, (_, index) => 2024 - index);
     const [noMoreMovie, setNoMoreMovie] = useState(false);
     const [profilePicture, setProfilePicture] = useState('')
+    const [profileHref, setProfileHref] = useState('')
     const [filterArgs, setFilterArgs] = useState({
         genres: [],
         languages: []
@@ -93,7 +79,9 @@ function Home() {
         setTimeout(() => {
             (async () => {
                 const { data } = await axios.get('http://localhost:8000/api/profile/');
-                setProfilePicture(data.profile);
+                if (data) {
+                    setProfilePicture(data.profile);
+                }
             })();
         }, 3000);
     }, []);
@@ -132,7 +120,7 @@ function Home() {
     return (
         <div className="dashboard">
             <span className="profile">
-                <a href="/profile"><img src={profilePicture} alt="Profile Image" /></a>
+                <a href={profilePicture ? '/profile' : '/login'}>{profilePicture ? <img src={profilePicture} alt="Profile Image" /> : <button className="profile">Login</button>}</a>
             </span>
             <div className="search-bar">
                 <input type="text" placeholder="Search..." value={query}

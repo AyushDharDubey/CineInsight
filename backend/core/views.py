@@ -33,7 +33,7 @@ class FilterView(APIView):
             return Response({'genres': genres, 'languages': languages}, status=status.HTTP_200_OK)
 
 class SearchView(ListAPIView):
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
@@ -49,7 +49,7 @@ class SearchView(ListAPIView):
     ordering = ['-release_date', '-rating',]
 
 class MovieView(RetrieveAPIView):
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
     serializer_class = MovieSerializer
     
