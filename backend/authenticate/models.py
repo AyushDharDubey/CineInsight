@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 
 def image_directory(instance, filename): 
-      return 'user_{0}/avatar.jpg'.format(instance.id) 
+      return f'{instance.username}/avatar.{filename.split(".")[-1]}'
 
 class UserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):

@@ -20,6 +20,10 @@ export default function Movie() {
         language: '',
         genre: ""
     });
+    const [reviewData, setReviewData] = useState([]);
+    const [review, setReview] = useState();
+
+
 
     useEffect(() => {
         // getting filter arguments
@@ -37,9 +41,9 @@ export default function Movie() {
         setTimeout(() => {
             (async () => {
                 try {
-                    const response = await axios.get('http://localhost:8000/api/favourites/');
-                    if (response) {
-                        if (response.data.fav.includes(movieId)) setIsFav(true);
+                    const { data } = await axios.get('http://localhost:8000/api/favourites/');
+                    if (data) {
+                        if (data.fav.includes(movieId)) setIsFav(true);
                         else setIsFav(false)
                     }
                 } catch (e) {
@@ -48,18 +52,27 @@ export default function Movie() {
             })();
         }, 3000);
     }, []);
-    useEffect(() => {
-
-
-    }, []);
 
     const toogleFav = async () => {
-        const response = await axios.get('http://localhost:8000/api/favourites/', {
+        const { data } = await axios.get('http://localhost:8000/api/favourites/', {
             params: {
                 id: movieId
             }
         });
-        setIsFav(response.data.fav);
+        if (data) setIsFav(data.fav);
+    }
+
+    const submitReview = async () => {
+        const { data } = await axios.post('http://localhost:8000/api/add_review/', {
+            params: {
+                id: movieId,
+                review: review
+            }
+        });
+        if (data) {
+            setReviewData((prevReviews) => [...prevReviews, ...data['results']]);
+            setReview('');
+        }
     }
 
     // check if user scrolled till end
@@ -125,8 +138,8 @@ export default function Movie() {
                 </div>
             </div><div class="review-container">
                 <h2>Add Review</h2>
-                <textarea placeholder="Share your thoughts on this movie..." className="review-textbox"></textarea>
-                <button className="submit-review">Submit Review</button>
+                <textarea placeholder="Share your thoughts on this movie..." className="review-textbox" onChange={(e) => setReview(e.target.value)}></textarea>
+                <button className="submit-review" onClick={submitReview}>Submit Review</button>
 
                 <h2>Reviews</h2>
                 <ul className="reviews-list">

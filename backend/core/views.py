@@ -45,7 +45,7 @@ class SearchView(ListAPIView):
         'release_date': ['icontains'],
     }
     search_fields = ['name', 'language']
-    ordering_fields = ['rating', 'name']
+    ordering_fields = ['release_date', 'rating', 'name', 'duration']
     ordering = ['-release_date', '-rating',]
 
 class MovieView(RetrieveAPIView):

@@ -77,7 +77,7 @@ body {
 
 .filter-item {
   margin: 0.5em;
-  width: 200px;
+  width: auto;
   display: flex;
   align-items: center;
   transition: transform 0.2s ease-in-out;
@@ -311,7 +311,7 @@ body {
   max-width: 800px;
 }
 
-button {
+button, .edit-profile {
   font-family: inherit;
   font-size: 0.9em;
   font-weight: bold;
@@ -325,10 +325,17 @@ button {
   cursor: pointer;
 }
 
+.logout {
+  position: absolute;
+  padding:5px;
+  right:1em;
+}
+
 .edit-profile, button .profile {
   position: absolute;
   top: 1em;
   right: 1em;
+  
 }
 
 .edit-profile:hover {
@@ -380,8 +387,10 @@ button {
 }
 
 .faourite-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
   gap: 1em;
+  max-width: 700px;
   margin-top: 0;
 }
 

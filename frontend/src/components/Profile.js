@@ -28,30 +28,31 @@ export default function Profile() {
         setTimeout(() => {
             (async () => {
                 const { data } = await axios.get('http://localhost:8000/api/profile/');
-                setProfileData(data);
+                console.log(data)
+                if (data) setProfileData(data);
             })();
-        }, 3000);
+        }, 2000);
     }, []);
 
-    console.log(profileData);
 
     return (
         <div className="profile-container">
             <a href='#' className="edit-profile">Edit Profile</a>
+            <div className='logout'><button href='#'>Logout</button></div>
             <img src={profileData.profile} alt={`${profileData.username}'s profile picture`} className="profile-image-big" />
             <h1 className="profile-username">@{profileData.username}</h1>
             <p className="profile-email">Email: {profileData.email}</p>
             <p className="profile-name">Name: {profileData.name}</p>
             <h2 className="favourite-heading">Favourite Movies</h2>
-            <ul className="faourite-list">
+            <div className="faourite-list">
                 {profileData.favourite.map((movie) => (
-                    <li className="favourite-item" key={movie.id}>
+                    <span className="favourite-item" key={movie.id}>
                         <a href={'/movie/' + movie.id}>
                             <img src={movie.image.slice(0, -3) + 'QL56_UY210_CR12,0,148,210_.jpg'} alt={movie.name} />
                         </a>
-                    </li>
+                    </span>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
