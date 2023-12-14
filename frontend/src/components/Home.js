@@ -2,12 +2,28 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import axios from "axios";
 
 function Home() {
+    useEffect(() => {
+        if (localStorage.getItem('access_token') === null) {
+            window.location.href = '/login'
+        }
+        else {
+            (async () => {
+                try {
+                    const { data } = await axios.get('http://localhost:8000/auth/');
+                } catch (e) {
+                    console.log('not auth')
+                }
+            })()
+        };
+    }, []);
+
     const [isLoading, setIsLoading] = useState(false);
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const years = Array.from({ length: 100 }, (_, index) => 2024 - index);
     const [noMoreMovie, setNoMoreMovie] = useState(false);
+    const [profilePicture, setProfilePicture] = useState('')
     const [filterArgs, setFilterArgs] = useState({
         genres: [],
         languages: []
@@ -35,9 +51,12 @@ function Home() {
                     'release_date__icontains': filters.year,
                 }
             });
-            setMovies((prevMovies) => [...prevMovies, ...data['results']]);
-            setCurrentPage((prevPage) => prevPage + 1);
+            if (data) {
+                setMovies((prevMovies) => [...prevMovies, ...data['results']]);
+                setCurrentPage((prevPage) => prevPage + 1);
+            }
         } catch (error) {
+            console.log(error);
             if (error.response.status === 404) {
                 setNoMoreMovie(true);
             } else {
@@ -45,7 +64,7 @@ function Home() {
             }
         }
         setIsLoading(false);
-    }, [currentPage, isLoading]);
+    }, [currentPage,]);
 
     const search = async () => {
         setIsLoading(true);
@@ -58,24 +77,35 @@ function Home() {
                 'release_date__icontains': filters.year,
             }
         });
-        setMovies(data['results']);
+        if (data) setMovies(data['results']);
         setIsLoading(false);
     };
 
     useEffect(() => {
         if (query) {
-            setTimeout(() => search(), 500);
+            setTimeout(() => search(), 700);
         } else {
             search();
         }
     }, [filters, query]);
 
     useEffect(() => {
+        setTimeout(() => {
+            (async () => {
+                const { data } = await axios.get('http://localhost:8000/api/profile/');
+                setProfilePicture(data.profile);
+            })();
+        }, 3000);
+    }, []);
+
+    useEffect(() => {
         // getting filter arguments
-        (async () => {
-            const { data } = await axios.get("http://localhost:8000/api/filters/");
-            setFilterArgs({ 'genres': data.genres, 'languages': data.languages });
-        })();
+        setTimeout(() => {
+            (async () => {
+                const { data } = await axios.get("http://localhost:8000/api/filters/");
+                setFilterArgs({ 'genres': data.genres, 'languages': data.languages });
+            })();
+        }, 3000);
     }, []);
 
     // check if user scrolled till end
@@ -101,7 +131,10 @@ function Home() {
 
     return (
         <div className="dashboard">
-            <div class="search-bar">
+            <span className="profile">
+                <a href="/profile"><img src={profilePicture} alt="Profile Image" /></a>
+            </span>
+            <div className="search-bar">
                 <input type="text" placeholder="Search..." value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
@@ -125,7 +158,7 @@ function Home() {
                         ))}
                     </select>
                 </div>
-                <div class="filter-item">
+                <div className="filter-item">
                     <label htmlFor="rating">Rating:</label>
                     <select id="rating" name="rating" value={filters.rating}
                         onChange={(event) => {
@@ -143,7 +176,7 @@ function Home() {
                         ))}
                     </select>
                 </div>
-                <div class="filter-item">
+                <div className="filter-item">
                     <label htmlFor="releaseY">Released in:</label>
                     <select
                         value={filters.releaseY}
@@ -157,17 +190,16 @@ function Home() {
                     </select>
                 </div>
             </div>
-            <div class="movies-container">
+            <div className="movies-container">
                 {movies.map((movie) => (
-                    <div class="movie-item" key={movie.id}>
+                    <div className="movie-item" key={movie.id}>
                         <a href={'/movie/' + movie.id}>
                             <img src={movie.image.slice(0, -3) + 'QL112_UY421_CR12,0,285,421_.jpg'} alt={movie.name} />
-                            <div class="movie-info">
+                            <div className="movie-info">
                                 <h3>{movie.name}</h3>
-                                <p>{movie.description.slice(0, 200)}...</p>
-                                <span class='rating'>Rating: {movie.rating}</span>
-                                <span>Release Date: {movie.release_date}</span>
-                                <span>Content Rating: {movie.content_rating}</span>
+                                <div className='rating'>Rating: {movie.rating}</div>
+                                <div>Release Date: {movie.release_date}</div>
+                                <div>Content Rating: {movie.content_rating}</div>
                             </div>
                         </a>
                     </div>
