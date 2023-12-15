@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
+import "./Movie.css";
 
 export default function Movie() {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,10 +19,13 @@ export default function Movie() {
         duration: '',
         tags: '',
         language: '',
+        platforms: '',
         genre: ""
     });
     const [reviewData, setReviewData] = useState([]);
     const [review, setReview] = useState();
+    const loaderRef = useRef(null);
+
 
 
 
@@ -63,38 +67,52 @@ export default function Movie() {
     }
 
     const submitReview = async () => {
-        const { data } = await axios.post('http://localhost:8000/api/add_review/', {
+        const { data } = await axios.post('http://localhost:8000/api/reviews/', {
+            movie: movieId,
+            body: review,
+            title: "sample",
+            rating: "9" + "/10",
+        });
+        if (data) {
+            setReview('');
+            setCurrentPage(1);
+            setReviewData([]);
+        }
+    }
+    console.log(review)
+    const fetchData = async () => {
+        const { data } = await axios.get('http://localhost:8000/api/reviews/', {
             params: {
-                id: movieId,
-                review: review
+                page: currentPage,
+                movie: movieId,
             }
         });
         if (data) {
             setReviewData((prevReviews) => [...prevReviews, ...data['results']]);
-            setReview('');
+            setCurrentPage((prevPage) => prevPage + 1);
         }
     }
 
     // check if user scrolled till end
     // if yes then fetchData()
-    // useEffect(() => {
-    //     const observer = new IntersectionObserver((entries) => {
-    //         const target = entries[0];
-    //         if (target.isIntersecting) {
-    //             fetchData();
-    //         }
-    //     });
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            const target = entries[0];
+            if (target.isIntersecting) {
+                fetchData();
+            }
+        });
 
-    //     if (loaderRef.current) {
-    //         observer.observe(loaderRef.current);
-    //     }
+        if (loaderRef.current) {
+            observer.observe(loaderRef.current);
+        }
 
-    //     return () => {
-    //         if (loaderRef.current) {
-    //             observer.unobserve(loaderRef.current);
-    //         }
-    //     };
-    // }, [fetchData]);
+        return () => {
+            if (loaderRef.current) {
+                observer.unobserve(loaderRef.current);
+            }
+        };
+    }, [fetchData]);
 
     return (
         <>
@@ -129,6 +147,12 @@ export default function Movie() {
                             ))}
                         </ul>
                         <ul className="tabs">
+                            Available on: &nbsp;
+                            {movieData.platforms.slice(0, -1).split(",").map((tag) => (
+                                <li key={tag}> {tag}</li>
+                            ))}
+                        </ul>
+                        <ul className="tabs">
                             Tags:&nbsp;
                             {movieData.tags.split(",").map((tag) => (
                                 <li key={tag}>{tag}</li>
@@ -136,22 +160,24 @@ export default function Movie() {
                         </ul>
                     </p>
                 </div>
-            </div><div class="review-container">
+            </div>
+            <div class="review-container">
                 <h2>Add Review</h2>
-                <textarea placeholder="Share your thoughts on this movie..." className="review-textbox" onChange={(e) => setReview(e.target.value)}></textarea>
+                <textarea placeholder="Share your thoughts on this movie..." className="review-textbox" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
                 <button className="submit-review" onClick={submitReview}>Submit Review</button>
 
                 <h2>Reviews</h2>
                 <ul className="reviews-list">
-                    {/* {movieData.reviews.map((review) => (
-    <li key={review.id} className="review">
-        <h3>{review.title}</h3>
-        <p>By {review.username}</p>
-        <p className="rating">Rating: {review.rating}</p>
-        <p className="date">{review.date}</p>
-        <p>{review.content}</p>
-    </li>
-))} */}
+                    {reviewData.map((review) => (
+                        <li key={review.id} className="review">
+                            <h3>{review.title}</h3>
+                            <p>By <b>@{review.user ? review.user : "IMDB User"}</b></p>
+                            <p className="rating">Rating: {review.rating}</p>
+                            <p className="date">{review.date}</p>
+                            <p>{review.body}</p>
+                        </li>
+                    ))}
+                    <div ref={loaderRef}></div>
                 </ul>
             </div>
         </>

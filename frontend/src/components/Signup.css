@@ -84,15 +84,3 @@ label[for="profile"] {
   background-color: #eee;
   color: #333;
 }
-
-.file-hidden {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-}
-
-button.file-hidden:is(:focus, :focus-within)+label {
-  outline: thin dotted;
-}

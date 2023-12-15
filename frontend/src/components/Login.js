@@ -60,7 +60,7 @@ const Login = () => {
                     <a href="#">Forgot password?</a>
                 </div>
                 <div className="signup">
-                    <a href="#">Signup</a>
+                    <a href="/signup">Signup</a>
                 </div>
                 <div className="social-login">
                     {/* Implement social login buttons here */}

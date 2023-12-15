@@ -83,7 +83,7 @@ export default function Signup() {
                     <button type="submit">Signup</button>
                 </div>
                 <div className="login">
-                    <a href="#">Login</a>
+                    <a href="/login">Login</a>
                 </div>
                 <div className="social-login">
                     {/* Implement social login buttons here */}

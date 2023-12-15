@@ -1,7 +1,9 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import axios from "axios";
+import "./Home.css"
 
 function Home() {
+    const [menuOpen, setMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [movies, setMovies] = useState([]);
     const [query, setQuery] = useState('');
@@ -131,9 +133,21 @@ function Home() {
 
     return (
         <div className="dashboard">
-            <span className="profile">
-                <a href={profilePicture ? '/profile' : '/login'}>{profilePicture ? <img src={profilePicture} alt="Profile Image" /> : <button className="profile">Login</button>}</a>
-            </span>
+            <div className="profile">
+                {profilePicture ? (
+                    <img src={profilePicture} alt="Profile Image" onClick={() => setMenuOpen(!menuOpen)} />
+                ) : (
+                    <a href="/login"><button className="profile">Login</button></a>
+                )}
+                {menuOpen && (
+                    <ul className="profile-menu">
+                        <li><a>Account info</a></li>
+                        <li><a>Account info</a></li>
+                        <li><a>Account info</a></li>
+                    </ul>
+                )}
+            </div>
+
             <div className="search-bar">
                 <input type="text" placeholder="Search..." value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -152,8 +166,7 @@ function Home() {
                 <div className="filter-item">
                     <button onClick={changeOrder}>{order === '-' ? "DESC" : "ASC"}</button>
                 </div>
-            </div>
-            <div className="filters">
+                <p />
                 <div className="filter-item">
                     Filters:
                 </div>

@@ -1,17 +1,15 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Movie
+from .models import Movie, Review
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
-from .serializers import MovieSerializer, ProfileSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
+from .serializers import MovieSerializer, ProfileSerializer, ReviewSerializer
+from rest_framework.generics import RetrieveAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView, ListCreateAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
-from django_filters.rest_framework import NumberFilter, DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 from authenticate.models import User
+from datetime import datetime
 
 
 class FilterView(APIView):
@@ -61,13 +59,18 @@ class MovieView(RetrieveAPIView):
         except Movie.DoesNotExist:
             return None
 
-class ProfileView(RetrieveAPIView):
+class ProfileView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, )
 
     serializer_class = ProfileSerializer
+    queryset = User.objects.all()
+
+    def get_object(self):
+        self.kwargs['pk'] = self.request.user.id
+        return super().get_object()
 
     def retrieve(self, request, *args, **kwargs):
-        instance = User.objects.get(pk=self.request.user.id)
+        instance = self.get_object()
         serializer = self.get_serializer(instance)
         content = serializer.data
         favourite_movies = []
@@ -85,7 +88,7 @@ class FavouritesView(APIView):
         fav = []
         for movie in user.favourite.all():
             fav.append(movie.id)
-        if request.GET.get('id'):
+        if request.GET.get('id'): # if id is supplied, return if the movie_id is favourite or not
             movie = Movie.objects.get(pk=request.GET['id'])
             isFav = movie in user.favourite.all()
             if isFav:
@@ -94,5 +97,41 @@ class FavouritesView(APIView):
             else:
                 user.favourite.add(movie)
                 return Response({'fav': True}, status=status.HTTP_200_OK)
-        else:
+        else: # else return all favourite movies' id
             return Response({'fav': fav}, status=status.HTTP_200_OK)
+
+class ReviewView(ListCreateAPIView):
+    serializer_class = ReviewSerializer
+    filter_backends = [OrderingFilter]
+    ordering = ['-id']
+    page_size = 3
+
+    def list(self, request, *args, **kwargs):
+        try:
+            self.queryset = Review.objects.filter(movie_id = request.GET['movie'])
+        except Exception as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        for entry in serializer.data:
+            user_id = entry['user']
+            if type(user_id) == int:
+                entry['user'] = User.objects.get(pk = user_id).username
+        return self.get_paginated_response(serializer.data)
+    
+    def create(self, request, *args, **kwargs):
+        request.data['user'] = request.user.pk
+        request.data['date'] = datetime.now().strftime("%d %B %Y")
+        return super().create(request, *args, **kwargs)
+
+class TestView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileSerializer
+    queryset = User.objects.all()
+    def get_object(self):
+        self.kwargs['pk'] = self.request.user.id
+        print(self.request.user.id)
+        return super().get_object()
