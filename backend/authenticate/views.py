@@ -26,8 +26,7 @@ class SignupAPIView(APIView):
         try:
             serializer = UserSerializer(data=request.data)
             if not serializer.is_valid():
-                print(serializer.errors)
-                return Response({'errors': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             user = authenticate(username=request.data['username'], password = request.data['password'])
             if user:
@@ -71,3 +70,17 @@ def send_otp(sender, instance, created, **kwargs):
             instance.save()
         except Exception as e:
             print(e)
+
+
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

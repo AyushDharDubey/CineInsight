@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import "./Login.css";
 
 
 const Login = () => {
+    useEffect(() => {
+        if (localStorage.getItem('access_token')) {
+            window.location.href = '/'
+        }
+    }, []);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState({});
+
 
     const submit = async (e) => {
         e.preventDefault();
@@ -15,7 +23,7 @@ const Login = () => {
             password: password,
         };
 
-        const { data } = await axios.post(
+        const request = await axios.post(
             "http://localhost:8000/auth/login/",
             user,
             {
@@ -25,17 +33,24 @@ const Login = () => {
             },
             { withCredentials: true }
         );
+        if (request.data) {
+            localStorage.clear();
+            localStorage.setItem("access_token", request.data.access);
+            localStorage.setItem("refresh_token", request.data.refresh);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${request.data["access"]}`;
+            window.location.href = '/';
+        } else setErrors(request.response.data)
 
-        localStorage.clear();
-        localStorage.setItem("access_token", data.access);
-        localStorage.setItem("refresh_token", data.refresh);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-        window.location.href = '/';
     };
 
 
     return (
         <div className="login-page">
+            <div className='error'>
+                {Object.entries(errors).map(([key, message]) => (
+                    <p className="error-message">{`${key}: ${message}`}</p>
+                ))}
+            </div>
             <form className="login-form" onSubmit={submit}>
                 <div className="form-group">
                     <input

@@ -133,19 +133,27 @@ function Home() {
 
     return (
         <div className="dashboard">
-            <div className="profile">
+            <div className="profile" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
                 {profilePicture ? (
-                    <img src={profilePicture} alt="Profile Image" onClick={() => setMenuOpen(!menuOpen)} />
+                    <>
+                        <img src={profilePicture} alt="Profile Image" />
+                        {menuOpen && (
+                            <div className="profile-menu">
+                                <ul>
+                                    <li><a href="/profile">Account info</a></li>
+                                    <li><a href="/profile?edit">Edit account info</a></li>
+                                    <li><a href="/change_password">Change password</a></li>
+                                    <li><a href="/logout">Logout</a></li>
+                                </ul>
+                            </div>
+                        )}
+                    </>
                 ) : (
-                    <a href="/login"><button className="profile">Login</button></a>
+                    <a href="/login">
+                        <button className="profile">Login</button>
+                    </a>
                 )}
-                {menuOpen && (
-                    <ul className="profile-menu">
-                        <li><a>Account info</a></li>
-                        <li><a>Account info</a></li>
-                        <li><a>Account info</a></li>
-                    </ul>
-                )}
+
             </div>
 
             <div className="search-bar">
@@ -166,7 +174,8 @@ function Home() {
                 <div className="filter-item">
                     <button onClick={changeOrder}>{order === '-' ? "DESC" : "ASC"}</button>
                 </div>
-                <p />
+                </div>
+            <div className="filters">
                 <div className="filter-item">
                     Filters:
                 </div>
