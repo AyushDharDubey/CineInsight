@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import { Link } from 'react-router-dom';
 import "./Profile.css"
 
 export default function Profile() {
     useEffect(() => {
         if (localStorage.getItem('access_token') === null) {
-            window.location.href = '/login'
+            window.location.hash = '/login'
         }
     }, []);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -80,9 +81,9 @@ export default function Profile() {
                 {menuOpen && (
                     <div className="profile-menu">
                         <ul>
-                            <li><a href="/">Home</a></li>
-                            <li><a href="/change_password">Change password</a></li>
-                            <li><a href="/logout">Logout</a></li>
+                            <li><Link to="/">Home</Link></li>
+                            <li><Link to="/change_password">Change password</Link></li>
+                            <li><Link to="/logout">Logout</Link></li>
                         </ul>
                     </div>
                 )}
@@ -132,9 +133,9 @@ export default function Profile() {
             <div className="faourite-list">
                 {profileData.favourite.map((movie) => (
                     <span className="favourite-item" key={movie.id}>
-                        <a href={"/movie/" + movie.id}>
+                        <Link to={"/movie/" + movie.id}>
                             <img src={movie.image.slice(0, -3) + "QL56_UY210_CR12,0,148,210_.jpg"} alt={movie.name} />
-                        </a>
+                        </Link>
                         {editMode && (<button className="remove-favourite" onClick={() => {
                             const updatedProfileData = {
                                 ...profileData,

@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import Home from './components/Home.js'
 import Movie from './components/Movie.js'
 import Login from './components/Login.js'
@@ -11,7 +11,7 @@ import Profile from './components/Profile.js';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter basename='/'>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/test" element={<Test />} />
@@ -22,7 +22,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
 
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

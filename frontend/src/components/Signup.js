@@ -1,12 +1,13 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import { Link } from 'react-router-dom';
 import "./Signup.css";
 
 
 export default function Signup() {
     useEffect(() => {
         if (localStorage.getItem('access_token')) {
-            window.location.href = '/'
+            window.location.hash = '/'
         }
     }, []);
     const [username, setUsername] = useState('');
@@ -42,7 +43,7 @@ export default function Signup() {
             localStorage.setItem("access_token", request.data.access);
             localStorage.setItem("refresh_token", request.data.refresh);
             axios.defaults.headers.common["Authorization"] = `Bearer ${request.data["access"]}`;
-            window.location.href = '/';
+            window.location.hash = '/';
         } else setErrors(request.response.data)
 
     };
@@ -96,7 +97,7 @@ export default function Signup() {
                     <button type="submit">Signup</button>
                 </div>
                 <div className="login">
-                    <a href="/login">Login</a>
+                    <Link to="/login">Login</Link>
                 </div>
                 <div className="social-login">
                     {/* Implement social login buttons here */}

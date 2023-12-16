@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from "axios";
 import "./Login.css";
 
@@ -6,7 +7,7 @@ import "./Login.css";
 const Login = () => {
     useEffect(() => {
         if (localStorage.getItem('access_token')) {
-            window.location.href = '/'
+            window.location.hash = '/'
         }
     }, []);
 
@@ -38,7 +39,7 @@ const Login = () => {
             localStorage.setItem("access_token", request.data.access);
             localStorage.setItem("refresh_token", request.data.refresh);
             axios.defaults.headers.common["Authorization"] = `Bearer ${request.data["access"]}`;
-            window.location.href = '/';
+            window.location.hash = '/';
         } else setErrors(request.response.data)
 
     };
@@ -72,10 +73,10 @@ const Login = () => {
                     <button type="submit">Login</button>
                 </div>
                 <div className="forgot-password">
-                    <a href="#">Forgot password?</a>
+                    <Link to="#">Forgot password?</Link>
                 </div>
                 <div className="signup">
-                    <a href="/signup">Signup</a>
+                    <Link to="/signup">Signup</Link>
                 </div>
                 <div className="social-login">
                     {/* Implement social login buttons here */}

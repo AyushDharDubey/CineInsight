@@ -20,7 +20,7 @@ export const Logout = () => {
             console.log("logout", data);
             localStorage.clear();
             axios.defaults.headers.common["Authorization"] = null;
-            window.location.href = "/login";
+            window.location.hash = "/login";
         })();
     }, []);
 

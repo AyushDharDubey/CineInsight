@@ -1,8 +1,3 @@
-<div className="profile-password">
-                        <p>New password: <input type="text" onChange={(e) => setName(e.target.value)} /></p>
-                        <p>Confirm password: <input type="text" onChange={(e) => setName(e.target.value)} /></p>
-                    </div>
-
 import React, { useState } from 'react';
 import axios from "axios";
 import "./ChangePassword.css";
@@ -14,7 +9,7 @@ export default function ChangePassword() {
     const [confirmPassword, setconfirmPassword] = useState('');
 
     const submit = async (e) => {
-        
+
     };
 
 
@@ -49,10 +44,10 @@ export default function ChangePassword() {
                     <button type="submit">Login</button>
                 </div>
                 <div className="forgot-password">
-                    <a href="#">Forgot password?</a>
+                    <Link to="#">Forgot password?</Link>
                 </div>
                 <div className="signup">
-                    <a href="/signup">Signup</a>
+                    <Link to="/signup">Signup</Link>
                 </div>
                 <div className="social-login">
                     {/* Implement social login buttons here */}
