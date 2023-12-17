@@ -8,7 +8,7 @@ class Movie(models.Model):
     image = models.CharField(max_length=512)
     description = models.TextField()
     rating = models.FloatField()
-    platforms = models.CharField(max_length=256)
+    platform = models.CharField(max_length=256)
     release_date = models.CharField(max_length=12)
     content_rating = models.CharField(max_length=8)
     trailer = models.CharField(max_length=128)

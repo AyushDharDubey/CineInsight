@@ -69,7 +69,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
       ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 12
+    'PAGE_SIZE': 24
 }
 
 
@@ -164,8 +164,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'mail.smtp2go.com'
 EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'tmpuser7@proton.me'
-EMAIL_HOST_PASSWORD = '9hipw0rd'
+EMAIL_PORT = 2525
+EMAIL_FROM = 'a98886657e04a1@crankymonkey.info'
+EMAIL_HOST_USER = 'godkode'
+EMAIL_HOST_PASSWORD = '6PkDRyOQph7HG3qf'
