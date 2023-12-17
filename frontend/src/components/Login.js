@@ -7,10 +7,10 @@ import "./Login.css";
 const Login = () => {
     useEffect(() => {
         if (localStorage.getItem("access_token")) {
-            window.location.hash="/";
+            window.location.hash = "/";
         }
     }, []);
-    
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
