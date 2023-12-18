@@ -155,9 +155,7 @@ export default function Profile() {
                     </>
                 )}
 
-                <h2 className="favourite-heading">Favourite Movies</h2>
-
-                <div className="faourite-list">
+                {profileData.favourite.length > 0 && (<><h2 className="favourite-heading">Favourite Movies</h2><div className="faourite-list">
                     {profileData.favourite.map((movie) => (
                         <span className="favourite-item" key={movie.id}>
                             <Link to={"/movie/" + movie.id}>
@@ -169,34 +167,33 @@ export default function Profile() {
                                     favourite: profileData.favourite.filter((mov) => mov.id !== movie.id),
                                 };
                                 setProfileData(updatedProfileData);
-                            }
-                            } >
+                            }}>
                                 X
                             </button>)}
                         </span>
 
                     ))}
-                </div>
+                </div></>)}
                 {editMode && (<button className='save-profile' onClick={saveProfile}>Save</button>)}
             </div >
 
-            {editMode===false && recomendations.length > 0 && (
-                    <><h2>You might also like...</h2>
+            {editMode === false && recomendations.length > 0 && (
+                <><h2>You might also like...</h2>
                     <div class="recomendation-container">
-                    {recomendations.map((movie) => (
-                        <div className="movie-item">
-                            <Link to={'/movie/' + movie.id}>
-                                <img src={movie.image.slice(0, -3) + 'QL112_UY421_CR12,0,285,421_.jpg'} alt={movie.name} />
-                                <div className="movie-info">
-                                    <h3>{movie.name}</h3>
-                                    <div className='rating'>Rating: {movie.rating}</div>
-                                    <div>Release Date: {movie.release_date}</div>
-                                    <div>Content Rating: {movie.content_rating}</div>
-                                </div>
-                            </Link>
-                        </div>
-                    ))}
-                </div></>
+                        {recomendations.map((movie) => (
+                            <div className="movie-item">
+                                <Link to={'/movie/' + movie.id}>
+                                    <img src={movie.image.slice(0, -3) + 'QL112_UY421_CR12,0,285,421_.jpg'} alt={movie.name} />
+                                    <div className="movie-info">
+                                        <h3>{movie.name}</h3>
+                                        <div className='rating'>Rating: {movie.rating}</div>
+                                        <div>Release Date: {movie.release_date}</div>
+                                        <div>Content Rating: {movie.content_rating}</div>
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
+                    </div></>
             )}
         </div>
     );
