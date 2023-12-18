@@ -5,6 +5,28 @@ import { useParams } from 'react-router-dom';
 import "./Movie.css";
 
 export default function Movie() {
+    const [isAuth, setIsAuth] = useState(true);
+    useEffect(() => {
+        if (localStorage.getItem("access_token") === null) {
+            setIsAuth(false)
+        } else {
+            (async () => {
+                const { data } = await axios.get("http://localhost:8000/api/profile/", {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if (data) {
+                    if (!data.is_email_verified) {
+                        window.location.hash = "/signup";
+                    }
+                } else {
+                    window.location.hash = "/login";
+                }
+            })();
+        }
+    }, []);
+    
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [isFav, setIsFav] = useState(false);
@@ -28,23 +50,21 @@ export default function Movie() {
     const [reviewTitle, setReviewTitle] = useState('');
     const [reviewRating, setReviewRating] = useState(null);
     const [reviewBody, setReviewBody] = useState('');
+    const [recomendations, setRecomendations] = useState([]);
     const loaderRef = useRef(null);
 
 
 
 
     useEffect(() => {
-        // setTimeout(() => {
         (async () => {
             const { data } = await axios.get('http://localhost:8000/api/movie/' + movieId + '/');
             setMovieData(data);
         })();
-        // }, 2000);
     }, []);
 
 
     useEffect(() => {
-        // setTimeout(() => {
         (async () => {
             try {
                 const { data } = await axios.get('http://localhost:8000/api/favourites/');
@@ -56,7 +76,20 @@ export default function Movie() {
                 console.log(e)
             }
         })();
-        // }, 3000);
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            const { data } = await axios.get('http://localhost:8000/api/recomendations/', {
+                params: {
+                    movie: movieId,
+                }
+            });
+            if (data) {
+                setRecomendations(data['results']);
+                console.log(data['results']);
+            }
+        })();
     }, []);
 
     const toogleFav = async () => {
@@ -172,6 +205,24 @@ export default function Movie() {
                     </p>
                 </div>
             </div>
+            {recomendations.length > 0 && (
+                    <><h2>You might also like...</h2>
+                    <div class="recomendation-container">
+                    {recomendations.map((movie) => (
+                        <div className="movie-item">
+                            <Link to={'/movie/' + movie.id}>
+                                <img src={movie.image.slice(0, -3) + 'QL112_UY421_CR12,0,285,421_.jpg'} alt={movie.name} />
+                                <div className="movie-info">
+                                    <h3>{movie.name}</h3>
+                                    <div className='rating'>Rating: {movie.rating}</div>
+                                    <div>Release Date: {movie.release_date}</div>
+                                    <div>Content Rating: {movie.content_rating}</div>
+                                </div>
+                            </Link>
+                        </div>
+                    ))}
+                </div></>
+            )}
             <div className='error'>
                 {Object.entries(errors).map(([key, message]) => (
                     <p className="error-message">{`${key}: ${message}`}</p>
@@ -185,6 +236,7 @@ export default function Movie() {
                     <textarea placeholder="Share your thoughts on this movie..." className="review-body" rows="7" value={reviewBody} onChange={(e) => setReviewBody(e.target.value)}></textarea>
                     <button className="submit-review" onClick={submitReview}>Submit Review</button>
                 </div>
+                <hr />
                 <h2>Reviews</h2>
                 <ul className="reviews-list">
                     {reviewData.map((review) => (

@@ -53,6 +53,9 @@ class SearchView(ListAPIView):
     ordering_fields = ['release_date', 'rating', 'name', 'duration']
     ordering = ['-release_date', '-rating',]
 
+
+
+
 class MovieView(RetrieveAPIView):
     # permission_classes = (IsAuthenticated, )
 
@@ -65,6 +68,41 @@ class MovieView(RetrieveAPIView):
             return Movie.objects.get(pk=movie_id)
         except Movie.DoesNotExist:
             return None
+
+class RecomendationView(ListAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = MovieSerializer
+    def get(self, request, *args, **kwargs):
+        if 'movie' in request.GET:
+            query = Movie.objects.get(pk = request.GET['movie'])
+            serializer = self.get_serializer(query)
+            tags = serializer.data['tags'].split(',')
+            q=Q(tags__icontains = tags[0])
+            for tag in tags[1:]:
+                q = q or Q(tags__icontains = tag)
+            q = (q & ~Q(pk = request.GET['movie']))
+        else:
+            serializer = ProfileSerializer(User.objects.get(pk=1))
+            favourites = serializer.data['favourite']
+            tags = []
+            if len(favourites):
+                for favourite in favourites:
+                    query = Movie.objects.get(pk = favourite)
+                    serializer = MovieSerializer(query)
+                    tags += serializer.data['tags'].split(',')
+                tags = list(set(tags))
+                q=Q(tags__contains = tags[0])
+                for tag in tags[1:]:
+                    q |= Q(tags__icontains = tag)
+            else:
+                q = Q(rating__gte = 8)
+            self.queryset = Movie.objects.filter(q).order_by('-rating')
+            if (len(self.queryset) < 1):
+                print('len(self.queryset)')
+                self.queryset = Movie.objects.all()
+        self.queryset = Movie.objects.filter(q).order_by('-rating')
+        return super().get(request, *args, **kwargs)
+
 
 class ProfileView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, )
@@ -108,6 +146,7 @@ class FavouritesView(APIView):
             return Response({'fav': fav}, status=status.HTTP_200_OK)
 
 class ReviewView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
     filter_backends = [OrderingFilter]
     ordering = ['-id']

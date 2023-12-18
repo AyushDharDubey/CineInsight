@@ -4,6 +4,27 @@ import { Link } from 'react-router-dom';
 import "./Home.css"
 
 function Home() {
+    const [isAuth, setIsAuth] = useState(true);
+    useEffect(() => {
+        if (localStorage.getItem("access_token") === null) {
+            setIsAuth(false)
+        } else {
+            (async () => {
+                const { data } = await axios.get("http://localhost:8000/api/profile/", {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if (data) {
+                    if (!data.is_email_verified) {
+                        window.location.hash = "/signup";
+                    }
+                } else {
+                    // window.location.hash = "/login";
+                }
+            })();
+        }
+    }, []);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [movies, setMovies] = useState([]);
@@ -82,7 +103,6 @@ function Home() {
             }
         });
         if (data) setMovies(data['results']);
-        console.log(movies)
         setIsLoading(false);
     };
 
@@ -192,7 +212,7 @@ function Home() {
                     </select>
                 </div>
                 <div className="filter-item">
-                    <label htmlFor="platform">Genre:</label>
+                    <label htmlFor="platform">Platform:</label>
                     <select id="platform" name="platform" value={filters.platform} onChange={(event) => setFilters({ ...filters, platform: event.target.value })}>
                         <option value="">All</option>
                         {filterArgs['platforms'].map((element) => (
