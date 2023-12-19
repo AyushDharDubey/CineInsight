@@ -5,7 +5,7 @@ export const Logout = () => {
     useEffect(() => {
         (async () => {
             const { data } = await axios.post(
-                "http://localhost:8000/auth/logout/",
+                "https://backend.i7saelx.repl.co/auth/logout/",
                 {
                     refresh_token: localStorage.getItem("refresh_token"),
                 },

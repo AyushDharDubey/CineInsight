@@ -79,10 +79,10 @@ class RecomendationView(ListAPIView):
             tags = serializer.data['tags'].split(',')
             q=Q(tags__icontains = tags[0])
             for tag in tags[1:]:
-                q = q or Q(tags__icontains = tag)
-            q = (q & ~Q(pk = request.GET['movie']))
+                q |= Q(tags__icontains = tag)
+            q &= ~Q(pk = request.GET['movie'])
         else:
-            serializer = ProfileSerializer(User.objects.get(pk=1))
+            serializer = ProfileSerializer(request.user)
             favourites = serializer.data['favourite']
             tags = []
             if len(favourites):
@@ -98,7 +98,6 @@ class RecomendationView(ListAPIView):
                 q = Q(rating__gte = 8)
             self.queryset = Movie.objects.filter(q).order_by('-rating')
             if (len(self.queryset) < 1):
-                print('len(self.queryset)')
                 self.queryset = Movie.objects.all()
         self.queryset = Movie.objects.filter(q).order_by('-rating')
         return super().get(request, *args, **kwargs)

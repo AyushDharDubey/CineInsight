@@ -106,7 +106,7 @@
     margin: 1em 0;
     color: inherit;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 24%));
     gap: 1em;
 }
 

@@ -25,7 +25,7 @@ const Login = () => {
         };
 
         const request = await axios.post(
-            "http://localhost:8000/auth/login/",
+            "https://backend.i7saelx.repl.co/auth/login/",
             user,
             {
                 headers: {
@@ -73,7 +73,7 @@ const Login = () => {
                     <button type="submit">Login</button>
                 </div>
                 <div className="forgot-password">
-                    <Link to="#">Forgot password?</Link>
+                    <Link to="/reset_password">Forgot password?</Link>
                 </div>
                 <div className="signup">
                     <Link to="/signup">Signup</Link>

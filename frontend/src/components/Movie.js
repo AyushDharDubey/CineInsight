@@ -11,7 +11,7 @@ export default function Movie() {
             setIsAuth(false)
         } else {
             (async () => {
-                const { data } = await axios.get("http://localhost:8000/api/profile/", {
+                const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -26,7 +26,7 @@ export default function Movie() {
             })();
         }
     }, []);
-    
+
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [isFav, setIsFav] = useState(false);
@@ -58,16 +58,16 @@ export default function Movie() {
 
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get('http://localhost:8000/api/movie/' + movieId + '/');
+            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/movie/' + movieId + '/');
             setMovieData(data);
         })();
-    }, []);
+    }, [movieId]);
 
 
     useEffect(() => {
         (async () => {
             try {
-                const { data } = await axios.get('http://localhost:8000/api/favourites/');
+                const { data } = await axios.get('https://backend.i7saelx.repl.co/api/favourites/');
                 if (data) {
                     if (data.fav.includes(movieId)) setIsFav(true);
                     else setIsFav(false)
@@ -76,11 +76,11 @@ export default function Movie() {
                 console.log(e)
             }
         })();
-    }, []);
+    }, [movieId]);
 
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get('http://localhost:8000/api/recomendations/', {
+            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/recomendations/', {
                 params: {
                     movie: movieId,
                 }
@@ -90,10 +90,10 @@ export default function Movie() {
                 console.log(data['results']);
             }
         })();
-    }, []);
+    }, [movieId]);
 
     const toogleFav = async () => {
-        const request = await axios.get('http://localhost:8000/api/favourites/', {
+        const request = await axios.get('https://backend.i7saelx.repl.co/api/favourites/', {
             params: {
                 id: movieId
             }
@@ -109,7 +109,7 @@ export default function Movie() {
             setErrors({ 'rating': 'rating value must be out of 10' });
             return;
         }
-        const request = await axios.post('http://localhost:8000/api/reviews/', {
+        const request = await axios.post('https://backend.i7saelx.repl.co/api/reviews/', {
             movie: movieId,
             body: reviewBody,
             title: reviewTitle,
@@ -125,7 +125,7 @@ export default function Movie() {
         } else setErrors(request.response.data);
     }
     const fetchData = async () => {
-        const { data } = await axios.get('http://localhost:8000/api/reviews/', {
+        const { data } = await axios.get('https://backend.i7saelx.repl.co/api/reviews/', {
             params: {
                 page: currentPage,
                 movie: movieId,
@@ -156,7 +156,7 @@ export default function Movie() {
                 observer.unobserve(loaderRef.current);
             }
         };
-    }, [fetchData]);
+    }, [fetchData, movieId]);
 
     return (
         <>
@@ -206,22 +206,22 @@ export default function Movie() {
                 </div>
             </div>
             {recomendations.length > 0 && (
-                    <><h2>You might also like...</h2>
+                <><h2>You might also like...</h2>
                     <div class="recomendation-container">
-                    {recomendations.map((movie) => (
-                        <div className="movie-item">
-                            <Link to={'/movie/' + movie.id}>
-                                <img src={movie.image.slice(0, -3) + 'QL112_UY421_CR12,0,285,421_.jpg'} alt={movie.name} />
-                                <div className="movie-info">
-                                    <h3>{movie.name}</h3>
-                                    <div className='rating'>Rating: {movie.rating}</div>
-                                    <div>Release Date: {movie.release_date}</div>
-                                    <div>Content Rating: {movie.content_rating}</div>
-                                </div>
-                            </Link>
-                        </div>
-                    ))}
-                </div></>
+                        {recomendations.map((movie) => (
+                            <div className="movie-item">
+                                <Link to={'/movie/' + movie.id}>
+                                    <img src={movie.image.slice(0, -3) + 'QL112_UY421_CR12,0,285,421_.jpg'} alt={movie.name} />
+                                    <div className="movie-info">
+                                        <h3>{movie.name}</h3>
+                                        <div className='rating'>Rating: {movie.rating}</div>
+                                        <div>Release Date: {movie.release_date}</div>
+                                        <div>Content Rating: {movie.content_rating}</div>
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
+                    </div></>
             )}
             <div className='error'>
                 {Object.entries(errors).map(([key, message]) => (

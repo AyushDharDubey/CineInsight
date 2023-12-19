@@ -1,6 +1,6 @@
 from .models import User
 from rest_framework import serializers
-from .helpers import send_otp
+from .utils import send_account_activation
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
-        send_otp(user)
+        send_account_activation(user)
         return user
     
 class IsEmailVerified(serializers.ModelSerializer):

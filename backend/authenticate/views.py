@@ -8,8 +8,8 @@ from .models import User
 from rest_framework.generics import RetrieveAPIView
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
-from .helpers import send_otp
-
+from .utils import send_account_activation, send_password_reset
+from django.contrib.auth.tokens import default_token_generator
 
 class SignupAPIView(APIView):
     def post(self, request):
@@ -33,17 +33,22 @@ class SignupAPIView(APIView):
             print(e)
             return Response({'message': 'something went wrong'}, status.HTTP_400_BAD_REQUEST)
 
-class OtpValidateView(APIView):
-    permission_classes = (IsAuthenticated, )
+class AccountActivateView(APIView):
+    # permission_classes = (IsAuthenticated, )
 
-    def get(self, request, *args, **kwargs):
-        username = kwargs.get('username')
-        # email_verification_token = 
+    # def get(self, request, *args, **kwargs):
+    #     username = kwargs.get('username')
+    #     # email_verification_token = 
 
     def post(self, request):
-        user = User.objects.get(email = request.user.email)
+        user = None
+        try:
+            user = User.objects.get(username = request.data.get('username'))
+        except:
+            if request.user.is_authenticated:
+                user = request.user
         if not user:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'user doesn\'t exist'}, status.HTTP_400_BAD_REQUEST)
         if (user.otp == request.data.get('OTP') or user.email_verification_token == request.data.get('token')):
             user.is_email_verified = True
             user.otp = None
@@ -53,24 +58,11 @@ class OtpValidateView(APIView):
         return Response({'error': 'wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
     def patch(self, request):
         user = request.user
-        if send_otp(user):
+        if send_account_activation(user):
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response(status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'try after some time'}, status.HTTP_400_BAD_REQUEST)
         
-class TokenValidateView(APIView):
-    def post(self, request):
-        user = User.objects.get(username = request.data.get('username'))
-        if not user:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        if (user.email_verification_token == request.data.get('token')):
-            user.is_email_verified = True
-            user.otp = None
-            user.email_verification_token = None
-            user.save()
-            return Response(status.HTTP_200_OK)
-        return Response({'error': 'bad token'}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ChangePasswordView(APIView):
     permission_classes = (IsAuthenticated, )
@@ -85,6 +77,48 @@ class ChangePasswordView(APIView):
            
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class ResetPasswordView(APIView):
+    def get(self, request, *args, **kwargs):
+        token = request.GET.get('token')
+        username = request.GET.get('username')
+        if token and username:
+            try:
+                user = User.objects.get(username = username)
+            except:
+                return Response({'error': 'user doesn\'t exist'}, status.HTTP_400_BAD_REQUEST)
+            if default_token_generator.check_token(user, token):
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'token expired'}, status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, *args, **kwargs):
+        token = request.data.get('token')
+        password = request.data.get('password')
+        try:
+            user = User.objects.get(username = request.data.get('username'))
+        except:
+            return Response({'error': 'user doesn\'t exist'}, status.HTTP_400_BAD_REQUEST)
+        if not default_token_generator.check_token(user, token):
+            return Response({'error': 'token expired'}, status.HTTP_400_BAD_REQUEST)
+        if not password:
+            return Response({'error': 'empty password'}, status.HTTP_400_BAD_REQUEST)
+        user.set_password(password)
+        user.save()
+        return Response(status.HTTP_200_OK)
+
+    def patch(self, request):
+        try:
+            user = User.objects.get(email = request.data.get('email'))
+        except:
+            return Response({'error': 'user doesn\'t exist'}, status.HTTP_400_BAD_REQUEST)
+
+        if send_password_reset(user):
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'try after some time'}, status.HTTP_400_BAD_REQUEST)
+
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)

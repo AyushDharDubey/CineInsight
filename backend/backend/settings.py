@@ -27,11 +27,11 @@ SECRET_KEY = 'django-insecure-*_qt(@rx1^^*x#8^x!!t++&34e-yel#(hyyivt%f9cx32421h!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend.i7saelx.repl.co']
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1', 'https://ayushdhardubey.github.io']
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://ayushdhardubey.github.io']
 
 # Application definition
 
@@ -167,6 +167,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.smtp2go.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 2525
-EMAIL_FROM = 'a98886657e04a1@crankymonkey.info'
-EMAIL_HOST_USER = 'godkode'
-EMAIL_HOST_PASSWORD = '6PkDRyOQph7HG3qf'
+EMAIL_FROM = 'cc57706581abfd@crankymonkey.info'
+EMAIL_HOST_USER = 'tmpusr8'
+EMAIL_HOST_PASSWORD = 't6mSVoyoYuUJtmGi'

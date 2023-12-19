@@ -10,7 +10,7 @@ function Home() {
             setIsAuth(false)
         } else {
             (async () => {
-                const { data } = await axios.get("http://localhost:8000/api/profile/", {
+                const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -62,7 +62,7 @@ function Home() {
 
         setIsLoading(true);
         try {
-            const { data } = await axios.get('http://localhost:8000/api/', {
+            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/', {
                 'params': {
                     'page': currentPage,
                     'search': query,
@@ -91,7 +91,7 @@ function Home() {
 
     const search = async () => {
         setIsLoading(true);
-        const { data } = await axios.get('http://localhost:8000/api/', {
+        const { data } = await axios.get('https://backend.i7saelx.repl.co/api/', {
             'params': {
                 'search': query,
                 'rating__gte': filters.rating,
@@ -117,7 +117,7 @@ function Home() {
     useEffect(() => {
         // setTimeout(() => {
         (async () => {
-            const { data } = await axios.get('http://localhost:8000/api/profile/');
+            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/profile/');
             if (data) {
                 setProfilePicture(data.profile);
             }
@@ -128,7 +128,7 @@ function Home() {
     useEffect(() => {
         // getting filter arguments
         (async () => {
-            const { data } = await axios.get("http://localhost:8000/api/filters/");
+            const { data } = await axios.get("https://backend.i7saelx.repl.co/api/filters/");
             setFilterArgs({ 'genres': data.genres, 'languages': data.languages, 'platforms': data.platforms });
         })();
     }, []);

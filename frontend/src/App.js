@@ -10,6 +10,7 @@ import Logout from './components/Logout.js';
 import ChangePassword from './components/ChangePassword.js'
 import Profile from './components/Profile.js';
 import EmailValidate from './components/EmailValidate.js';
+import PasswordReset from './components/PasswordReset.js';
 import Dashboard from './components/Dashboard.js';
 
 function App() {
@@ -21,9 +22,11 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/change_password" element={<ChangePassword />} />
+        <Route path="/reset_password" element={<PasswordReset />} />
+        <Route path="/reset_password/:username/:token" element={<PasswordReset />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/auth/:username/:token" element={<EmailValidate />} />
+        <Route path="/activate_account/:username/:token" element={<EmailValidate />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/test" element={<Test />} />
 

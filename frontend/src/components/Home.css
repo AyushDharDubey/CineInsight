@@ -64,7 +64,7 @@
 /* Movies Container Styles */
 .movies-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 24%));
     gap: 1em;
 }
 

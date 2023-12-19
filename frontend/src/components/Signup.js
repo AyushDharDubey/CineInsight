@@ -19,7 +19,7 @@ export default function Signup() {
         if (localStorage.getItem("access_token")) {
             (async () => {
                 try {
-                    const { data } = await axios.get("http://localhost:8000/api/profile/", {
+                    const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -48,7 +48,7 @@ export default function Signup() {
         if (profile) content.append('profile', profile);
 
         const request = await axios.post(
-            "http://localhost:8000/auth/signup/",
+            "https://backend.i7saelx.repl.co/auth/signup/",
             content,
             {
                 headers: {
@@ -70,13 +70,8 @@ export default function Signup() {
     const otpSubmit = async () => {
 
         const request = await axios.post(
-            "http://localhost:8000/auth/validate_otp/",
-            { OTP: otp },
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            },
+            "https://backend.i7saelx.repl.co/auth/activate_account/",
+            { OTP: otp }
         );
         if (request.status === 200) {
             setSuccessMessage('OTP verified successfully')
@@ -86,7 +81,7 @@ export default function Signup() {
 
     const resendOTP = async () => {
         const request = await axios.patch(
-            "http://localhost:8000/auth/validate_otp/");
+            "https://backend.i7saelx.repl.co/auth/activate_account/");
         if (request.status === 200) {
             setSuccessMessage('OTP resend successfully')
         } else setErrors(request.response.data)
