@@ -10,7 +10,7 @@ export default function Login() {
             window.location.hash = "/login";
         } else {
             (async () => {
-                const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
+                const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/profile/", {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -42,7 +42,7 @@ export default function Login() {
         };
 
         const request = await axios.post(
-            "https://backend.i7saelx.repl.co/auth/change_password/",
+            process.env.REACT_APP_BASE_BACKEND + "/auth/change_password/",
             user,
             {
                 headers: {

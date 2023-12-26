@@ -10,7 +10,7 @@ function Dashboard() {
             setIsAuth(false)
         } else {
             (async () => {
-                const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
+                const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/profile/", {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -63,7 +63,7 @@ function Dashboard() {
 
         setIsLoading(true);
         try {
-            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/recomendations/', {
+            const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/recomendations/', {
                 'params': {
                     'page': currentPage,
                     'search': query,
@@ -92,7 +92,7 @@ function Dashboard() {
 
     const search = async () => {
         setIsLoading(true);
-        const { data } = await axios.get('https://backend.i7saelx.repl.co/api/recomendations/', {
+        const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/recomendations/', {
             'params': {
                 'search': query,
                 'rating__gte': filters.rating,
@@ -118,7 +118,7 @@ function Dashboard() {
     useEffect(() => {
         // getting filter arguments
         (async () => {
-            const { data } = await axios.get("https://backend.i7saelx.repl.co/api/filters/");
+            const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/filters/");
             setFilterArgs({ 'genres': data.genres, 'languages': data.languages, 'platforms': data.platforms });
         })();
     }, []);

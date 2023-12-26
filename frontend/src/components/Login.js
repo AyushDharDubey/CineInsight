@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import axios from "axios";
 import "./Login.css";
 
 
 const Login = () => {
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [errors, setErrors] = useState({});
+    const clientId = "759644824374-v4olseg4mjm8marhh6hqmrq5r4kcqqp4.apps.googleusercontent.com";
+    const callbackUri = process.env.REACT_APP_BASE_BACKEND + "/auth/oauth2_google/callback/";
+
+
     useEffect(() => {
         if (localStorage.getItem("access_token")) {
             window.location.hash = "/";
         }
+        if (searchParams.get('access') && searchParams.get('refresh')) {
+            localStorage.setItem("access_token", searchParams.get('access'));
+            localStorage.setItem("refresh_token", searchParams.get('refresh'));
+            axios.defaults.headers.common["Authorization"] = `Bearer ${searchParams.get('access')}`;
+            window.location.hash = '/';
+        }
     }, []);
-
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({});
 
 
     const submit = async (e) => {
@@ -25,7 +36,7 @@ const Login = () => {
         };
 
         const request = await axios.post(
-            "https://backend.i7saelx.repl.co/auth/login/",
+            process.env.REACT_APP_BASE_BACKEND + "/auth/login/",
             user,
             {
                 headers: {
@@ -79,7 +90,24 @@ const Login = () => {
                     <Link to="/signup">Signup</Link>
                 </div>
                 <div className="social-login">
-                    {/* Implement social login buttons here */}
+                    <div className='google-login'>
+                        <div id="g_id_onload"
+                            data-client_id={clientId}
+                            data-context="signin"
+                            data-ux_mode="popup"
+                            data-login_uri={callbackUri}
+                            data-auto_prompt="false">
+                        </div>
+
+                        <div class="g_id_signin"
+                            data-type="standard"
+                            data-shape="pill"
+                            data-theme="filled_black"
+                            data-text="signin_with"
+                            data-size="large"
+                            data-logo_alignment="left">
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

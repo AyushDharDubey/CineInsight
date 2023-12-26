@@ -17,7 +17,7 @@ export default function PasswordReset() {
         if (localStorage.getItem("access_token")) {
             (async () => {
                 try {
-                    const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
+                    const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/profile/", {
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -35,7 +35,7 @@ export default function PasswordReset() {
 
         if (username && token) {
             (async () => {
-                const request = await axios.get("https://backend.i7saelx.repl.co/auth/reset_password/", {
+                const request = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/auth/reset_password/", {
                     params: {
                         token: token,
                         username: username
@@ -56,7 +56,7 @@ export default function PasswordReset() {
         }
 
         const request = await axios.post(
-            "https://backend.i7saelx.repl.co/auth/reset_password/",
+            process.env.REACT_APP_BASE_BACKEND + "/auth/reset_password/",
             {
                 username: username,
                 token: token,
@@ -75,7 +75,7 @@ export default function PasswordReset() {
         e.preventDefault();
 
         const request = await axios.patch(
-            "https://backend.i7saelx.repl.co/auth/reset_password/",
+            process.env.REACT_APP_BASE_BACKEND + "/auth/reset_password/",
             { email: email }
         );
         console.log(request)

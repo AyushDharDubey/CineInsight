@@ -10,7 +10,7 @@ axios.interceptors.response.use(
 
       // console.log(localStorage.getItem("refresh_token"));
       const response = await axios.post(
-        "https://backend.i7saelx.repl.co/auth/refresh/",
+        process.env.REACT_APP_BASE_BACKEND + "/auth/refresh/",
         {
           refresh: localStorage.getItem("refresh_token"),
         },

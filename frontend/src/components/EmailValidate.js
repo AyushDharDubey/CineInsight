@@ -10,7 +10,7 @@ export default function EmailValidate() {
     useEffect(() => {
         (async () => {
             const request = await axios.post(
-                "https://backend.i7saelx.repl.co/auth/activate_account/",
+                process.env.REACT_APP_BASE_BACKEND + "/auth/activate_account/",
                 {
                     username: username,
                     token: token

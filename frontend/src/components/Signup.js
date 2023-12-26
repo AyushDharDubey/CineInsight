@@ -5,6 +5,8 @@ import "./Signup.css";
 
 
 export default function Signup() {
+    const clientId = "759644824374-v4olseg4mjm8marhh6hqmrq5r4kcqqp4.apps.googleusercontent.com";
+    const callbackUri = process.env.REACT_APP_BASE_BACKEND + "/auth/oauth2_google/callback/";
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -19,7 +21,7 @@ export default function Signup() {
         if (localStorage.getItem("access_token")) {
             (async () => {
                 try {
-                    const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
+                    const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/profile/", {
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -48,7 +50,7 @@ export default function Signup() {
         if (profile) content.append('profile', profile);
 
         const request = await axios.post(
-            "https://backend.i7saelx.repl.co/auth/signup/",
+            process.env.REACT_APP_BASE_BACKEND + "/auth/signup/",
             content,
             {
                 headers: {
@@ -70,7 +72,7 @@ export default function Signup() {
     const otpSubmit = async () => {
 
         const request = await axios.post(
-            "https://backend.i7saelx.repl.co/auth/activate_account/",
+            process.env.REACT_APP_BASE_BACKEND + "/auth/activate_account/",
             { OTP: otp }
         );
         if (request.status === 200) {
@@ -81,7 +83,7 @@ export default function Signup() {
 
     const resendOTP = async () => {
         const request = await axios.patch(
-            "https://backend.i7saelx.repl.co/auth/activate_account/");
+            process.env.REACT_APP_BASE_BACKEND + "/auth/activate_account/");
         if (request.status === 200) {
             setSuccessMessage('OTP resend successfully')
         } else setErrors(request.response.data)
@@ -141,7 +143,24 @@ export default function Signup() {
                         <Link to="/login">Login</Link>
                     </div>
                     <div className="social-login">
-                        {/* Implement social login buttons here */}
+                        <div className='google-login'>
+                            <div id="g_id_onload"
+                                data-client_id={clientId}
+                                data-context="signin"
+                                data-ux_mode="popup"
+                                data-login_uri={callbackUri}
+                                data-auto_prompt="false">
+                            </div>
+
+                            <div class="g_id_signin"
+                                data-type="standard"
+                                data-shape="pill"
+                                data-theme="filled_black"
+                                data-text="signin_with"
+                                data-size="large"
+                                data-logo_alignment="left">
+                            </div>
+                        </div>
                     </div>
                 </form>
                 :

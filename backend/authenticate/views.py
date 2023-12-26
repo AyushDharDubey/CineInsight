@@ -3,13 +3,19 @@ from rest_framework.response import Response
 from django.db.models import Q
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from .serializers import UserSerializer
+from .serializers import *
 from .models import User
 from rest_framework.generics import RetrieveAPIView
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
-from .utils import send_account_activation, send_password_reset
+from .utils import *
 from django.contrib.auth.tokens import default_token_generator
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
+import os
 
 class SignupAPIView(APIView):
     def post(self, request):
@@ -131,3 +137,35 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class Oauth2Google(APIView):
+    def post(self, request):
+        g_csrf_token = request.data.get('g_csrf_token')
+        credential = request.data.get('credential')
+        try:
+            idinfo = id_token.verify_oauth2_token(credential, requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID)
+        except Exception as e:
+            return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
+        # return Response(idinfo)
+        try:
+            user = User.objects.get(email = idinfo.get('email'))
+            if user.registration_method == 'email':
+                print(user)
+                return Response({'error': 'user exists with this email'}, status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            data = {
+                'name':idinfo.get('name'),
+                'email':idinfo.get('email'),
+                'username':idinfo.get('email').split('@')[0],
+                'registration_method': 'google',
+                'is_email_verified': idinfo.get('email_verified')
+            }
+            serializer = OauthUserSerializer(data=data)
+            if not serializer.is_valid():
+                print(serializer.errors)
+                return Response({'error': 'internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            user = serializer.save()
+        refresh_token = RefreshToken.for_user(user)
+        access_token = AccessToken.for_user(user)
+        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/#/login?access={str(access_token)}&refresh={str(refresh_token)}')        

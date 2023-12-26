@@ -13,6 +13,15 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         send_account_activation(user)
         return user
+
+class OauthUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'name', 'registration_method', 'is_email_verified']
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.save()
+        return user
     
 class IsEmailVerified(serializers.ModelSerializer):
     class Meta:

@@ -11,7 +11,7 @@ export default function Movie() {
             setIsAuth(false)
         } else {
             (async () => {
-                const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
+                const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/profile/", {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -58,7 +58,7 @@ export default function Movie() {
 
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/movie/' + movieId + '/');
+            const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/movie/' + movieId + '/');
             setMovieData(data);
         })();
     }, [movieId]);
@@ -67,7 +67,7 @@ export default function Movie() {
     useEffect(() => {
         (async () => {
             try {
-                const { data } = await axios.get('https://backend.i7saelx.repl.co/api/favourites/');
+                const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/favourites/');
                 if (data) {
                     if (data.fav.includes(movieId)) setIsFav(true);
                     else setIsFav(false)
@@ -80,7 +80,7 @@ export default function Movie() {
 
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/recomendations/', {
+            const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/recomendations/', {
                 params: {
                     movie: movieId,
                 }
@@ -93,7 +93,7 @@ export default function Movie() {
     }, [movieId]);
 
     const toogleFav = async () => {
-        const request = await axios.get('https://backend.i7saelx.repl.co/api/favourites/', {
+        const request = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/favourites/', {
             params: {
                 id: movieId
             }
@@ -109,7 +109,7 @@ export default function Movie() {
             setErrors({ 'rating': 'rating value must be out of 10' });
             return;
         }
-        const request = await axios.post('https://backend.i7saelx.repl.co/api/reviews/', {
+        const request = await axios.post(process.env.REACT_APP_BASE_BACKEND + '/api/reviews/', {
             movie: movieId,
             body: reviewBody,
             title: reviewTitle,
@@ -125,7 +125,7 @@ export default function Movie() {
         } else setErrors(request.response.data);
     }
     const fetchData = async () => {
-        const { data } = await axios.get('https://backend.i7saelx.repl.co/api/reviews/', {
+        const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/reviews/', {
             params: {
                 page: currentPage,
                 movie: movieId,

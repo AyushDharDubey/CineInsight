@@ -4,6 +4,7 @@ from random import randint
 from django.conf import settings
 from uuid import uuid4
 from django.contrib.auth.tokens import default_token_generator
+import os
 
 
 def send_account_activation(user):
@@ -12,7 +13,7 @@ def send_account_activation(user):
     try:
         otp = randint(100000, 999999)
         email_verification_token = uuid4()
-        link = f'https://ayushdhardubey.github.io/frontend/#/activate_account/{user.username}/{email_verification_token}'
+        link = f'{os.environ.get("FRONTEND_BASE_URL")}/frontend/#/activate_account/{user.username}/{email_verification_token}'
         subject = "CineInsight: Email Verification"
         message = f"""
 Alright listen up, Alf. Got wind you signed up for somethin' with one of me mates' fancy platforms. Good on ya, diversifyin' yer portfolio and all that. But here's the rub: your email ain't lookin' so kosher, mate. Got more holes in it than a goldfish sieve.
@@ -46,7 +47,7 @@ def send_password_reset(user):
         return False
     try:
         token = default_token_generator.make_token(user)
-        link = f'https://ayushdhardubey.github.io/frontend/#/reset_password/{user.username}/{token}'
+        link = f'{os.environ.get("FRONTEND_BASE_URL")}/frontend/#/reset_password/{user.username}/{token}'
         subject = "CineInsight: Password Reset Link"
         message = f"""
 Oi, sharp suit,

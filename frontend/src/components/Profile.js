@@ -9,7 +9,7 @@ export default function Profile() {
             window.location.hash = "/login";
         } else {
             (async () => {
-                const { data } = await axios.get("https://backend.i7saelx.repl.co/api/profile/", {
+                const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + "/api/profile/", {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -40,7 +40,7 @@ export default function Profile() {
 
 
     const fetchData = async () => {
-        const { data } = await axios.get('https://backend.i7saelx.repl.co/api/profile/');
+        const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/profile/');
         console.log(data)
         if (data) {
             setProfileData(data);
@@ -57,7 +57,7 @@ export default function Profile() {
 
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get('https://backend.i7saelx.repl.co/api/recomendations/');
+            const { data } = await axios.get(process.env.REACT_APP_BASE_BACKEND + '/api/recomendations/');
             if (data) {
                 setRecomendations(data['results']);
             }
@@ -78,7 +78,7 @@ export default function Profile() {
         }
         if (profile) content.append('profile', profile);
         const request = await axios.patch(
-            "https://backend.i7saelx.repl.co/api/profile/",
+            process.env.REACT_APP_BASE_BACKEND + "/api/profile/",
             content,
             {
                 headers: {

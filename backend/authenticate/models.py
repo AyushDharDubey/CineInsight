@@ -26,6 +26,16 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = models.CharField(max_length=64, unique=True)
     email = models.EmailField(max_length=64, unique=True)
+    REGISTRATION_CHOICES = [
+        ('email', 'Email'),
+        ('google', 'Google'),
+        ('channel i', 'Channel i')
+    ]
+    registration_method = models.CharField(
+        max_length=10,
+        choices=REGISTRATION_CHOICES,
+        default='email'
+    )
     first_name = None
     last_name = None
     name = models.CharField(max_length=64)
