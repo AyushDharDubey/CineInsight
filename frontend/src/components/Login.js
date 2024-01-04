@@ -5,13 +5,14 @@ import "./Login.css";
 
 
 const Login = () => {
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [searchParams, setSearchParams] = useSearchParams();
     const [errors, setErrors] = useState({});
-    const clientId = "759644824374-v4olseg4mjm8marhh6hqmrq5r4kcqqp4.apps.googleusercontent.com";
-    const callbackUri = process.env.REACT_APP_BASE_BACKEND + "/auth/oauth2_google/callback/";
+    const googleClientId = process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID;
+    const channeliClientId = process.env.REACT_APP_CHANNELI_OAUTH_CLIENT_ID;
+    const googelCallbackUri = process.env.REACT_APP_BASE_BACKEND + "/auth/oauth2_google/callback/";
+    const channeliCallbackUri = process.env.REACT_APP_BASE_BACKEND + "/auth/oauth2_channeli/callback/";
 
 
     useEffect(() => {
@@ -92,10 +93,10 @@ const Login = () => {
                 <div className="social-login">
                     <div className='google-login'>
                         <div id="g_id_onload"
-                            data-client_id={clientId}
+                            data-client_id={googleClientId}
                             data-context="signin"
                             data-ux_mode="popup"
-                            data-login_uri={callbackUri}
+                            data-login_uri={googelCallbackUri}
                             data-auto_prompt="false">
                         </div>
 
@@ -107,6 +108,13 @@ const Login = () => {
                             data-size="large"
                             data-logo_alignment="left">
                         </div>
+                    </div>
+
+                    <div className='channeli-login'>
+                        <a href={"http://channeli.in/oauth/authorise?client_id=" + channeliClientId + "&redirect_uri=" + channeliCallbackUri} class="sc-iCfMLu eCfizE">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAkCAYAAAAOwvOmAAAACXBIWXMAABCcAAAQnAEmzTo0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAG7SURBVHgB7ZdNSwJRFIbfuSY2ljApJhmE0CYiMFpEkkRFHxBtjaBd9ROqbevoL1QQtAzamFKrCoJqFbiqVSSRi4pIzBLCzigEMpb3XsEZYh4QwTnCw51z3jmjYLtYhJVYUhQGC2JL8WJL8WJJqSbUic8FjAcAhwM4zwDpPOpGWqpXA9bDwFx35e/xe2DlCrh5gzRSty/UChxOGYV0ZruA0xlgwAtpxKUo/3eiZbHfCLiB3ZFybUOkwnQCY8HadX1UFwtBCmGpSDt/bY8GKYSlXAL/cDoghbBUOsdfeyc5gcJS8TTw8lm77vkDSD5ACmGpAk3U8hl9f/1dt5kCHiWDVCqnDui01iggM+/Ga690iquXwEYK0ij1bJ56Vk1TPIx2oJRJF090y0j4Ngt5aPNU7HWYE1uKl3+y5NFYDPoBN8cj5ISWPppvYaSWvMQkbZxq7TplC1JSdk/x0tTPcrjOFKpfVemtwONGo2HHMRVRjZ6u2bzxky/ADJi/hWF/wYuhoBNWodRTAQ9DctGHSKc1xH4aXVMZjkhs2AJiFdPnaS6f2ETIBTMxRIIutjffhoiJPVY1p/QeS5jYY99ezWAQS3quOQAAAABJRU5ErkJggg==" alt="Channeli Logo" class="sc-furwcr cLelLH" />
+                            &nbsp; Sign in with Channeli
+                        </a>
                     </div>
                 </div>
             </form>

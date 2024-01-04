@@ -11,11 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from .utils import *
 from django.contrib.auth.tokens import default_token_generator
 from google.oauth2 import id_token
-from google.auth.transport import requests
+from google.auth.transport import requests as g_requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
-import os
+import os, requests, json
 
 class SignupAPIView(APIView):
     def post(self, request):
@@ -144,8 +144,9 @@ class Oauth2Google(APIView):
         g_csrf_token = request.data.get('g_csrf_token')
         credential = request.data.get('credential')
         try:
-            idinfo = id_token.verify_oauth2_token(credential, requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID)
+            idinfo = id_token.verify_oauth2_token(credential, g_requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID)
         except Exception as e:
+            print(e)
             return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
         # return Response(idinfo)
         try:
@@ -168,4 +169,46 @@ class Oauth2Google(APIView):
             user = serializer.save()
         refresh_token = RefreshToken.for_user(user)
         access_token = AccessToken.for_user(user)
-        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/#/login?access={str(access_token)}&refresh={str(refresh_token)}')        
+        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/frontend/#/login?access={str(access_token)}&refresh={str(refresh_token)}')
+
+class Oauth2Channeli(APIView):
+    def get(self, request):
+        code = request.GET.get('code')
+        if not code:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        payload = {
+            'client_id':settings.CHANNELI_OAUTH_CLIENT_ID,
+            'client_secret':settings.CHANNELI_OAUTH_CLIENT_SECRET,
+            'grant_type':'authorization_code',
+            'code': code,
+            'redirect_uri': settings.BACKEND_BASE_URL + '/auth/oauth2_channeli/callback/'
+        }
+        res = requests.post('https://channeli.in/open_auth/token/', payload)
+        print(res.content)
+        if res.status_code != 200:
+            print(res)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        access_token = json.loads(res.content).get('access_token')
+        res = requests.get('https://channeli.in/open_auth/get_user_data/', headers={"Authorization": f"Bearer {access_token}"})
+        data = {
+            'username': json.loads(res.content).get('username'),
+            'name': json.loads(res.content).get('person').get('fullName'),
+            'email': json.loads(res.content).get('contactInformation').get('emailAddress'),
+            'registration_method': 'channel i',
+            'is_email_verified': True
+        }
+        try:
+            user = User.objects.get(email = data.get('email'))
+            if user.registration_method == 'email':
+                print(user)
+                return Response({'error': 'user exists with this email'}, status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            serializer = OauthUserSerializer(data=data)
+            if not serializer.is_valid():
+                print(serializer.errors)
+                return Response({'error': 'internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            user = serializer.save()
+        refresh_token = RefreshToken.for_user(user)
+        access_token = AccessToken.for_user(user)
+        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/frontend/#/login?access={str(access_token)}&refresh={str(refresh_token)}')        

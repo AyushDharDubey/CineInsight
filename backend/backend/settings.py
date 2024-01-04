@@ -30,11 +30,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', os.environ.get('BACKEND_BASE_HOST')]
+BACKEND_BASE_HOST = os.environ.get('BACKEND_BASE_HOST')
+BACKEND_BASE_URL = os.environ.get('BACKEND_BASE_URL')
+FRONTEND_BASE_URL = os.environ.get('FRONTEND_BASE_URL')
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1', os.environ.get('FRONTEND_BASE_URL')]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', BACKEND_BASE_HOST]
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000', os.environ.get('FRONTEND_BASE_URL')]
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1', FRONTEND_BASE_URL]
+
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000', FRONTEND_BASE_URL]
 
 # Application definition
 
@@ -175,4 +179,6 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 GOOGLE_OAUTH2_CLIENT_ID = os.environ.get('GOOGLE_OAUTH2_CLIENT_ID')
+CHANNELI_OAUTH_CLIENT_ID = os.environ.get('CHANNELI_OAUTH_CLIENT_ID')
+CHANNELI_OAUTH_CLIENT_SECRET = os.environ.get('CHANNELI_OAUTH_CLIENT_SECRET')
 GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET')

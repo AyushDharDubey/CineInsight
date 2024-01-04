@@ -1,3 +1,4 @@
-*pycache*
-*/migrations/0*
+__pycache__
 .env
+0*
+structure.sqlite3
