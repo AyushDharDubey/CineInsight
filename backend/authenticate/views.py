@@ -169,7 +169,7 @@ class Oauth2Google(APIView):
             user = serializer.save()
         refresh_token = RefreshToken.for_user(user)
         access_token = AccessToken.for_user(user)
-        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/frontend/#/login?access={str(access_token)}&refresh={str(refresh_token)}')
+        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/#/login?access={str(access_token)}&refresh={str(refresh_token)}')
 
 class Oauth2Channeli(APIView):
     def get(self, request):
@@ -211,4 +211,4 @@ class Oauth2Channeli(APIView):
             user = serializer.save()
         refresh_token = RefreshToken.for_user(user)
         access_token = AccessToken.for_user(user)
-        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/frontend/#/login?access={str(access_token)}&refresh={str(refresh_token)}')        
+        return redirect(os.environ.get('FRONTEND_BASE_URL') + f'/#/login?access={str(access_token)}&refresh={str(refresh_token)}')        

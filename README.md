@@ -1,6 +1,6 @@
 # The project can be experienced on https://ayushdhardubey.github.io/frontend
 
-# OR
+### OR
 
 # You may setup the project on your local machine as follows
 First install all the dependencies with:
