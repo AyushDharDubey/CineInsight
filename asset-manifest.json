@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/CineInsight/static/css/main.49e345f7.css",
-    "main.js": "/CineInsight/static/js/main.5177cfc7.js",
+    "main.js": "/CineInsight/static/js/main.59261196.js",
     "static/js/787.9e9f4ffd.chunk.js": "/CineInsight/static/js/787.9e9f4ffd.chunk.js",
     "static/media/logo.svg": "/CineInsight/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/CineInsight/index.html",
     "main.49e345f7.css.map": "/CineInsight/static/css/main.49e345f7.css.map",
-    "main.5177cfc7.js.map": "/CineInsight/static/js/main.5177cfc7.js.map",
+    "main.59261196.js.map": "/CineInsight/static/js/main.59261196.js.map",
     "787.9e9f4ffd.chunk.js.map": "/CineInsight/static/js/787.9e9f4ffd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.49e345f7.css",
-    "static/js/main.5177cfc7.js"
+    "static/js/main.59261196.js"
   ]
 }
