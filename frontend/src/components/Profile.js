@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./Profile.css"
 
 export default function Profile() {
+    const navigate = useNavigate();
     useEffect(() => {
         if (localStorage.getItem("access_token") === null) {
             window.location.hash = "/login";
@@ -16,10 +17,10 @@ export default function Profile() {
                 });
                 if (data) {
                     if (!data.is_email_verified) {
-                        window.location.hash = "/signup";
+                        // window.location.hash = "/signup";
                     }
                 } else {
-                    window.location.hash = "/login";
+                    // window.location.hash = "/login";
                 }
             })();
         }
@@ -34,7 +35,6 @@ export default function Profile() {
     const [name, setName] = useState('');
     const [profile, setProfile] = useState(null);
     const [errors, setErrors] = useState({});
-    const [editMode, setEditMode] = useState(window.location.hash.includes("edit"));
     const [recomendations, setRecomendations] = useState([]);
     const [movies, setMovies] = useState([{ id: 1 }]);
 
@@ -89,79 +89,69 @@ export default function Profile() {
         if (request.data) {
             fetchData();
             setErrors({});
-            setEditMode(false);
-            window.location.hash = "/profile";
+            alert('Profile saved successfully');
+            navigate('/profile');
         } else setErrors(request.response.data)
     };
 
     return (
         <div className='profile-page'>
-            <div className="profile-container">
-                <div className='error'>
-                    {Object.entries(errors).map(([key, message]) => (
-                        <p className="error-message">{`${key}: ${message}`}</p>
-                    ))}
-                </div>
-                <div className="profile-icon" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
-                    <img src={profileData.profile} alt="Profile Image" />
-                    {menuOpen && (
-                        <div className="profile-menu">
-                            <ul>
-                                <Link to="/"><li>Home</li></Link>
-                                <Link to="/profile?edit"><li onClick={() => setEditMode(true)}>Edit account info</li></Link>
-                                <Link to="/change_password"><li>Change password</li></Link>
-                                <Link to="/logout"><li>Logout</li></Link>
-                            </ul>
-                        </div>
-                    )}
-
-                </div>
-                {editMode ? (
-                    <>
-                        <label htmlFor="profile">Choose a new avatar.</label>
-                        <input
-                            id="profile"
-                            type="file"
-                            accept="image/*"
-                            className="file-hidden"
-                            onChange={(event) => setProfile(event.target.files[0])}
-                        />
-
-                        <h1 className="profile-username">@ {profileData.username}</h1>
-
-
-                        <p className="profile-email">
-                            Email: <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-                        </p>
-
-                        <p className="profile-name">
-                            Name: <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                        </p>
-
-                    </>
-                ) : (
-                    <>
-                        <img
-                            src={profileData.profile}
-                            alt={`${profileData.username}'s profile picture`}
-                            className="profile-image-big"
-                        />
-
-                        <h1 className="profile-username">@ {profileData.username}</h1>
-
-                        <p className="profile-email">Email: {profileData.email}</p>
-
-                        <p className="profile-name">Name: {profileData.name}</p>
-                    </>
+            <div className='error'>
+                {Object.entries(errors).map(([key, message]) => (
+                    <p className="error-message">{`${key}: ${message}`}</p>
+                ))}
+            </div>
+            <div className="profile-icon" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={() => setMenuOpen(false)}>
+                <img src={profileData.profile} alt="Profile Image" />
+                {menuOpen && (
+                    <div className="profile-menu">
+                        <ul>
+                            <Link to="/"><li>Home</li></Link>
+                            <Link to="/change_password"><li>Change password</li></Link>
+                            <Link to="/logout"><li>Logout</li></Link>
+                        </ul>
+                    </div>
                 )}
+            </div>
+            <div className="profile-container">
+                <div className='profile-image'>
+                    <img
+                        src={profileData.profile}
+                        alt={`${profileData.username}'s profile picture`}
+                        className="profile-image-big"
+                    />
+                    <br />
+                    <label htmlFor="profile">Choose a new avatar.</label>
+                    <input
+                        id="profile"
+                        type="file"
+                        accept="image/*"
+                        className="file-hidden"
+                        onChange={(event) => setProfile(event.target.files[0])}
+                    />
+                </div>
+                <div className='profile-info'>
 
+                    <h1 className="profile-username">@ {profileData.username}</h1>
+
+
+                    <p className="profile-email">
+                        <b>Email: </b><br /><input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </p>
+
+                    <p className="profile-name">
+                        <b>Name: </b><br /><input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                    </p>
+                </div>
+            </div>
+            <div>
                 {profileData.favourite.length > 0 && (<><h2 className="favourite-heading">Favourite Movies</h2><div className="faourite-list">
                     {profileData.favourite.map((movie) => (
                         <span className="favourite-item" key={movie.id}>
                             <Link to={"/movie/" + movie.id}>
                                 <img src={movie.image.slice(0, -3) + "QL56_UY210_CR12,0,148,210_.jpg"} alt={movie.name} />
                             </Link>
-                            {editMode && (<button className="remove-favourite" onClick={() => {
+                            <button className="remove-favourite" onClick={() => {
                                 const updatedProfileData = {
                                     ...profileData,
                                     favourite: profileData.favourite.filter((mov) => mov.id !== movie.id),
@@ -169,15 +159,15 @@ export default function Profile() {
                                 setProfileData(updatedProfileData);
                             }}>
                                 X
-                            </button>)}
+                            </button>
                         </span>
 
                     ))}
                 </div></>)}
-                {editMode && (<button className='save-profile' onClick={saveProfile}>Save</button>)}
+                <div className='save-profile'><button onClick={saveProfile}>Save</button></div>
             </div >
 
-            {editMode === false && recomendations.length > 0 && (
+            {recomendations.length > 0 && (
                 <><h2>You might also like...</h2>
                     <div class="recomendation-container">
                         {recomendations.map((movie) => (

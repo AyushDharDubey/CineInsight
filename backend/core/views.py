@@ -14,8 +14,6 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 
-
-
 class FilterView(APIView):
     # permission_classes = (IsAuthenticated, )
 
@@ -171,17 +169,3 @@ class ReviewView(ListCreateAPIView):
         request.data['user'] = request.user.pk
         request.data['date'] = datetime.now().strftime("%d %B %Y")
         return super().create(request, *args, **kwargs)
-
-class TestView(APIView):
-    def get(self, request, *args, **kwargs):
-        try:
-            otp = 62345
-            subject = "email verification"
-            message = f"Your OTP for email verification is: {otp}"
-            from_email = settings.EMAIL_FROM
-            recipient_list = ['yomipij965@arensus.com', ]
-            send_mail(subject, message, from_email, recipient_list)
-            return Response({})
-        except Exception as e:
-            print(e)
-            return Response({})

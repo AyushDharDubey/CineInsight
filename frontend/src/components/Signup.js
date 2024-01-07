@@ -28,6 +28,7 @@ export default function Signup() {
                             "Content-Type": "application/json",
                         },
                     });
+                    setEmail(data.email);
                     if (data.is_email_verified) {
                         window.location.hash = "/";
                     } else {
@@ -175,6 +176,7 @@ export default function Signup() {
                 :
                 <div className="signup-form">
                     <div className="form-group">
+                        Enter the OTP sent on {email}<p/>
                         <input
                             type="number"
                             placeholder="OTP"

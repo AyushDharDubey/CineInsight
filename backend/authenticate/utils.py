@@ -8,17 +8,17 @@ import os
 
 
 def send_account_activation(user):
-    if cache.get(user.email):
-        return False
+    # if cache.get(user.email):
+    #     return False
     try:
         otp = randint(100000, 999999)
         email_verification_token = uuid4()
-        link = f'{os.environ.get("FRONTEND_BASE_URL")}/frontend/#/activate_account/{user.username}/{email_verification_token}'
+        link = f'{os.environ.get("FRONTEND_BASE_URL")}/CineInsight/#/activate_account/{user.username}/{email_verification_token}'
         subject = "CineInsight: Email Verification"
         message = f"""
 Alright listen up, Alf. Got wind you signed up for somethin' with one of me mates' fancy platforms. Good on ya, diversifyin' yer portfolio and all that. But here's the rub: your email ain't lookin' so kosher, mate. Got more holes in it than a goldfish sieve.
 
-So, here's the deal, sunshine: click the link below and verify that email, sharpish. Think of it like wearin' a bulletproof vest in a Tommy gun fight. You wouldn't skip that, would ya? No, ya wouldn't.
+So, here's the deal, sunshine: click the link below and verify that email, sharpish. Think of it like wearin' a bulletproof vest in a Shelby gun fight. You wouldn't skip that, would ya? No, ya wouldn't.
 
 {link}
 

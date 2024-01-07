@@ -163,8 +163,7 @@ function Home() {
                         {menuOpen && (
                             <div className="profile-menu">
                                 <ul>
-                                    <Link to="/profile"><li>My profile</li></Link>
-                                    <Link to="/profile?edit"><li>Edit account info</li></Link>
+                                    <Link to="/profile"><li>Account Settings</li></Link>
                                     <Link to="/change_password"><li>Change password</li></Link>
                                     <Link to="/logout"><li>Logout</li></Link>
                                 </ul>

@@ -9,8 +9,6 @@
     margin-right: 0.5em;
 }
 
-
-/* Descriptive Movie Container Styles */
 .movie-container-descriptive {
     background-color: #2b2e30;
     border-radius: 4px;
@@ -21,8 +19,7 @@
 }
 
 .movie-poster {
-    height: auto;
-    object-fit: cover;
+    height: 631px;
     border-radius: 4px;
     margin-right: 1em;
 }
@@ -31,7 +28,6 @@
     flex: 1;
 }
 
-/* Toggle Favorite Styles */
 .toogle-fav {
     display: inline-block;
     padding: 0.5em 1em;
