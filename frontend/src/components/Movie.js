@@ -1,10 +1,11 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import "./Movie.css";
 
 export default function Movie() {
+    const navigate = useNavigate();
     const [isAuth, setIsAuth] = useState(true);
     useEffect(() => {
         if (localStorage.getItem("access_token") === null) {
@@ -18,10 +19,10 @@ export default function Movie() {
                 });
                 if (data) {
                     if (!data.is_email_verified) {
-                        window.location.hash = "/signup";
+                        navigate("/signup");
                     }
                 } else {
-                    window.location.hash = "/login";
+                    navigate("/login");
                 }
             })();
         }

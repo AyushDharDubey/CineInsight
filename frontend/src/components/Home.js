@@ -1,9 +1,10 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./Home.css"
 
 function Home() {
+    const navigate = useNavigate();
     const [isAuth, setIsAuth] = useState(true);
     useEffect(() => {
         if (localStorage.getItem("access_token") === null) {
@@ -17,10 +18,10 @@ function Home() {
                 });
                 if (data) {
                     if (!data.is_email_verified) {
-                        window.location.hash = "/signup";
+                        navigate("/signup");
                     }
                 } else {
-                    // window.location.hash = "/login";
+                    // navigate("/login");
                 }
             })();
         }

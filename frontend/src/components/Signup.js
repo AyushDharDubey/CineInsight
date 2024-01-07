@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./Signup.css";
 
 
 export default function Signup() {
+    const navigate = useNavigate();
     const googleClientId = process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID;
     const channeliClientId = process.env.REACT_APP_CHANNELI_OAUTH_CLIENT_ID;
     const googelCallbackUri = process.env.REACT_APP_BASE_BACKEND + "/auth/oauth2_google/callback/";
@@ -30,7 +31,7 @@ export default function Signup() {
                     });
                     setEmail(data.email);
                     if (data.is_email_verified) {
-                        window.location.hash = "/";
+                        navigate("/");
                     } else {
                         setEmailVerifier(true);
                     }
@@ -80,7 +81,7 @@ export default function Signup() {
         );
         if (request.status === 200) {
             setSuccessMessage('OTP verified successfully');
-            window.location.hash = "/";
+            navigate("/");
         } else setErrors(request.response.data)
     };
 
@@ -176,7 +177,7 @@ export default function Signup() {
                 :
                 <div className="signup-form">
                     <div className="form-group">
-                        Enter the OTP sent on {email}<p/>
+                        Enter the OTP sent on {email}<p />
                         <input
                             type="number"
                             placeholder="OTP"

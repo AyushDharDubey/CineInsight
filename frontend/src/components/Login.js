@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "./Login.css";
 
 
 const Login = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,13 +18,13 @@ const Login = () => {
 
     useEffect(() => {
         if (localStorage.getItem("access_token")) {
-            window.location.hash = "/";
+            navigate("/");
         }
         if (searchParams.get('access') && searchParams.get('refresh')) {
             localStorage.setItem("access_token", searchParams.get('access'));
             localStorage.setItem("refresh_token", searchParams.get('refresh'));
             axios.defaults.headers.common["Authorization"] = `Bearer ${searchParams.get('access')}`;
-            window.location.hash = '/';
+            navigate("/");
         }
     }, []);
 
@@ -51,7 +52,7 @@ const Login = () => {
             localStorage.setItem("access_token", request.data.access);
             localStorage.setItem("refresh_token", request.data.refresh);
             axios.defaults.headers.common["Authorization"] = `Bearer ${request.data["access"]}`;
-            window.location.hash = '/';
+            navigate("/");
         } else setErrors(request.response.data)
 
     };

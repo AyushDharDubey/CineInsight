@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export const Logout = () => {
+    const navigate = useNavigate();
     useEffect(() => {
         (async () => {
             const { data } = await axios.post(
@@ -20,7 +22,7 @@ export const Logout = () => {
             console.log("logout", data);
             localStorage.clear();
             axios.defaults.headers.common["Authorization"] = null;
-            window.location.hash = "/login";
+            navigate("/login");
         })();
     }, []);
 

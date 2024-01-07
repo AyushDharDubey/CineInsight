@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import "./PasswordReset.css";
 
 
 export default function PasswordReset() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [successMessage, setSuccessMessage] = useState(false);
@@ -23,9 +24,9 @@ export default function PasswordReset() {
                         },
                     });
                     if (data.is_email_verified) {
-                        window.location.hash = "/";
+                        navigate("/");
                     } else {
-                        window.location.hash = "/signup";
+                        navigate("/signup");
                     }
                 } catch (e) {
                     console.log(e);
@@ -66,7 +67,7 @@ export default function PasswordReset() {
         if (request.status === 200) {
             setErrors({});
             setSuccessMessage('Password reset successfull')
-            window.location.hash = "/login";
+            navigate("/login");
         } else setErrors(request.response.data);
 
     };
@@ -82,7 +83,7 @@ export default function PasswordReset() {
         if (request.status === 200) {
             setErrors({});
             setSuccessMessage('Check your email and click on the link to reset your password')
-            // window.location.hash = "/";
+            // navigate("/");
         } else setErrors(request.response.data);
 
     };
