@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import "./PasswordReset.css";
+import "./Signup.css";
 
 
 export default function PasswordReset() {
@@ -90,7 +90,7 @@ export default function PasswordReset() {
 
 
     return (
-        <div className="reset-password-page">
+        <div className="signup-page">
             <div className='error'>
                 {Object.entries(errors).map(([key, message]) => (
                     <p className="error-message">{`${key}: ${message}`}</p>
@@ -98,7 +98,7 @@ export default function PasswordReset() {
             </div>
             <p className="success-message">{successMessage}</p>
             {!tokenValidated ?
-                <form className="reset-password-form" onSubmit={submitEmail}>
+                <form className="signup-form" onSubmit={submitEmail}>
                     <div className="form-group">
                         <input
                             type="email"
@@ -121,7 +121,8 @@ export default function PasswordReset() {
                     </div>
                 </form>
                 :
-                <form className="password-reset-form" onSubmit={submitPassword}>
+                <form className="signup-form" onSubmit={submitPassword}>
+                    Choose a new message<p/>
                     <div className="form-group">
                         <input
                             type="password"

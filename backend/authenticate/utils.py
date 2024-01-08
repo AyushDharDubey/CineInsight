@@ -43,11 +43,11 @@ P.S. Don't even think about forwardin' this. I know where you live. And I know w
         return False
 
 def send_password_reset(user):
-    if cache.get(user.email):
-        return False
+    # if cache.get(user.email):
+    #     return False
     try:
         token = default_token_generator.make_token(user)
-        link = f'{os.environ.get("FRONTEND_BASE_URL")}/frontend/#/reset_password/{user.username}/{token}'
+        link = f'{os.environ.get("FRONTEND_BASE_URL")}/CineInsight/#/reset_password/{user.username}/{token}'
         subject = "CineInsight: Password Reset Link"
         message = f"""
 Oi, sharp suit,
@@ -70,7 +70,7 @@ Cheers,
 Alfie "The Fixer" Solomons"""
         from_email = settings.EMAIL_FROM
         recipient_list = [user.email, ]
-        send_mail(subject, message, from_email, recipient_list)
+        print(send_mail(subject, message, from_email, recipient_list))
         cache.set(user.email, token, 60)
         return True
     except Exception as e:
