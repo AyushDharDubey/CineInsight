@@ -1,4 +1,5 @@
-# The project can be experienced on https://ayushdhardubey.github.io/frontend
+# The project can be experienced on https://ayushdhardubey.github.io/CineInsight
+## unfortunately some websites don't work on IITR WiFi, my backend is also one of them so please visit above link either though mobile data or use vpn.
 
 ### OR
 
