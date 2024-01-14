@@ -69,6 +69,7 @@ export default function Signup() {
             localStorage.setItem("access_token", request.data.access);
             localStorage.setItem("refresh_token", request.data.refresh);
             axios.defaults.headers.common["Authorization"] = `Bearer ${request.data["access"]}`;
+            navigate("/signup");
         } else setErrors(request.response.data)
 
     };
