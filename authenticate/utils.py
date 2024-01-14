@@ -8,8 +8,8 @@ import os
 
 
 def send_account_activation(user):
-    # if cache.get(user.email):
-    #     return False
+    if cache.get(user.email):
+        return False
     try:
         otp = randint(100000, 999999)
         email_verification_token = uuid4()
@@ -21,6 +21,8 @@ Alright listen up, Alf. Got wind you signed up for somethin' with one of me mate
 So, here's the deal, sunshine: click the link below and verify that email, sharpish. Think of it like wearin' a bulletproof vest in a Shelby gun fight. You wouldn't skip that, would ya? No, ya wouldn't.
 
 {link}
+
+OTP: {otp}
 
 Remember Ae, time waits for no man, especially not a bloke with an unverified email. Tick tock, mate.
 
