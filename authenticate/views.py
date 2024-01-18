@@ -37,7 +37,7 @@ class SignupAPIView(APIView):
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             print(e)
-            return Response({'message': 'something went wrong'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
 
 class AccountActivateView(APIView):
     # permission_classes = (IsAuthenticated, )
